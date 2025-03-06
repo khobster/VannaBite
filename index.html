@@ -55,7 +55,7 @@
             transition: transform 8s cubic-bezier(0.17, 0.97, 0.12, 1);
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.2), 
                         0 0 30px rgba(255, 223, 0, 0.1);
-            border: 15px solid #2f3867;
+            border: 15px solid #218559;
             box-sizing: border-box;
         }
         
@@ -76,20 +76,20 @@
         
         .slice-text {
             transform-origin: center;
-            color: white;
+            color: black;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+            text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.8);
             position: absolute;
-            width: 120px;
-            text-align: right;
-            right: 0;
+            width: 150px;
+            text-align: center;
+            right: 10px;
             padding-right: 55px;
-            font-size: 12px;
+            font-size: 38px;
+            font-family: 'Impact', sans-serif;
             transform: rotate(90deg) translateY(-50%);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 100px;
         }
         
         .spinner {
@@ -413,10 +413,10 @@
         
         // Colors for the wheel slices - Wheel of Fortune style
         const colors = [
-            '#e15241', '#48a5ea', '#d8af3d', '#8061a9', 
-            '#75ba49', '#f5811e', '#2b75bb', '#e6331f',
-            '#f8d53d', '#5d50a6', '#6aaf4a', '#e6671f',
-            '#499cd5', '#d94033', '#e9c93f', '#9061a8'
+            '#FF4136', '#FFDC00', '#01FF70', '#7FDBFF', 
+            '#FF851B', '#F012BE', '#2ECC40', '#0074D9',
+            '#B10DC9', '#39CCCC', '#85144b', '#FF9900',
+            '#F56C42', '#3D9970', '#FFB6C1', '#DDDDDD'
         ];
         
         // Elements
@@ -461,13 +461,13 @@
                 const colorIndex = index % colors.length;
                 slice.style.backgroundColor = colors[colorIndex];
                 
-                // Add text - abbreviated if needed
+                // Just use the first letter as in Wheel of Fortune
                 const text = document.createElement('div');
                 text.className = 'slice-text';
                 text.title = option; // Full name on hover
                 
-                // Show abbreviated text if too long
-                text.textContent = option.length > 8 ? option.substring(0, 8) + '...' : option;
+                // Show only first letter in large font
+                text.textContent = option.charAt(0).toUpperCase();
                 
                 slice.appendChild(text);
                 wheel.appendChild(slice);
@@ -562,6 +562,14 @@
             setTimeout(() => {
                 // Calculate result
                 const result = dinnerOptions[numOptions - 1 - randomSpin];
+                
+                // Play cash register sound effect simulation
+                const cashElement = document.createElement('audio');
+                cashElement.innerHTML = '<audio autoplay><source src="data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAAwAAAbAAiIiIiIiIiIiIiIiIiIiIiIiIiIi0tLS0tLS0tLS0tLS0tLS0tLS0tLS02NjY2NjY2NjY2NjY2NjY2NjY2NjY2P////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAQmAAAAAAAAAbD8XUPfAAAAAAD/40DAAAAFGBAKAAB4AAAAoIIGLwMBhwAAABgAAAAAX0QA/+NQwAAABogS6jgzQAAAAwBn/AAADAAAAABQAA/+Y/8BBPgAAAAAAABYAAAABP8AAAAAOAAA/+NAwAAAB5AI5DAY4AAAAwA1YAAIDAAAAABYACn/8X4CBPgAAAAAAAAAAAAP+AAAAAOAAA/+NAwAAABzATiGAZ4AAAAwA+cAAADAAAAABsAAP9/P//////////////////////////////////8AAAAALAAA/+NAwAAACGgzSMAzwAAAAwDUZAAEDAAAAABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" type="audio/mp3"></audio>';
+                document.body.appendChild(cashElement);
+                setTimeout(() => {
+                    document.body.removeChild(cashElement);
+                }, 1000);
                 
                 // Clear any remaining intervals
                 clearInterval(tickInterval);
