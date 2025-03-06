@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dinner Wheel of Fortune</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
@@ -13,14 +15,20 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #f5f5f5;
+            background-color: #121629;
             padding: 20px;
+            color: white;
         }
         
         h1 {
-            color: #333;
+            font-family: 'Bebas Neue', sans-serif;
+            color: #ffdf00;
             margin-bottom: 20px;
             text-align: center;
+            font-size: 3rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 
+                        0 0 10px rgba(255, 255, 255, 0.7);
+            letter-spacing: 2px;
         }
         
         .container {
@@ -33,8 +41,8 @@
         
         .wheel-container {
             position: relative;
-            width: 400px;
-            height: 400px;
+            width: 450px;
+            height: 450px;
             margin: 20px 0;
         }
         
@@ -44,8 +52,11 @@
             border-radius: 50%;
             position: relative;
             overflow: hidden;
-            transition: transform 5s cubic-bezier(0.17, 0.67, 0.21, 1);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            transition: transform 8s cubic-bezier(0.17, 0.97, 0.12, 1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2), 
+                        0 0 30px rgba(255, 223, 0, 0.1);
+            border: 15px solid #2f3867;
+            box-sizing: border-box;
         }
         
         .wheel-slice {
@@ -55,7 +66,7 @@
             transform-origin: bottom right;
             left: 0;
             top: 0;
-            border: 1px solid #fff;
+            border: 2px solid #fff;
             box-sizing: border-box;
             display: flex;
             align-items: center;
@@ -67,14 +78,18 @@
             transform-origin: center;
             color: white;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
             position: absolute;
-            width: 140px;
+            width: 120px;
             text-align: right;
             right: 0;
-            padding-right: 50px;
-            font-size: 14px;
+            padding-right: 55px;
+            font-size: 12px;
             transform: rotate(90deg) translateY(-50%);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100px;
         }
         
         .spinner {
@@ -82,30 +97,67 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
-            background-color: #fff;
+            width: 70px;
+            height: 70px;
+            background-color: #ffdf00;
             border-radius: 50%;
             z-index: 10;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(255, 223, 0, 0.8);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            color: #121629;
+            font-size: 18px;
+            border: 5px solid white;
+            transition: all 0.3s ease;
+        }
+        
+        .spinner:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 223, 0, 1);
         }
         
         .spinner::after {
             content: '';
             position: absolute;
-            top: -10px;
+            top: -25px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 20px solid #ff5252;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 30px solid #ff5252;
+            filter: drop-shadow(0 0 5px rgba(255, 82, 82, 0.5));
+        }
+        
+        .peg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .peg {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background-color: white;
+            top: 10px;
+            left: calc(50% - 5px);
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
+        
+        @keyframes tickSound {
+            0% { transform: scaleY(1); }
+            50% { transform: scaleY(0.9); }
+            100% { transform: scaleY(1); }
         }
         
         .controls {
@@ -124,26 +176,36 @@
         
         input {
             flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
+            padding: 12px;
+            border: 2px solid #ffdf00;
             border-radius: 4px;
             margin-right: 10px;
             font-size: 16px;
+            background-color: #1d2340;
+            color: white;
+        }
+        
+        input::placeholder {
+            color: #aaa;
         }
         
         button {
             padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
+            background-color: #ffdf00;
+            color: #121629;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(255, 223, 0, 0.4);
         }
         
         button:hover {
-            background-color: #45a049;
+            background-color: #ffeb3b;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 223, 0, 0.6);
         }
         
         .option-list {
@@ -151,16 +213,19 @@
             width: 100%;
             max-height: 200px;
             overflow-y: auto;
-            border: 1px solid #ddd;
+            border: 2px solid #2f3867;
             border-radius: 4px;
-            background-color: white;
+            background-color: #1d2340;
         }
         
         .option-list h3 {
             text-align: center;
             padding: 10px;
             margin: 0;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 2px solid #2f3867;
+            font-family: 'Bebas Neue', sans-serif;
+            color: #ffdf00;
+            letter-spacing: 1px;
         }
         
         .options {
@@ -173,7 +238,7 @@
             display: flex;
             justify-content: space-between;
             padding: 10px 15px;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #2f3867;
         }
         
         .option-item:last-child {
@@ -188,45 +253,121 @@
             padding: 2px 8px;
             cursor: pointer;
             font-size: 14px;
+            transition: all 0.2s;
         }
         
         .delete-btn:hover {
             background-color: #ff3333;
+            transform: scale(1.1);
         }
         
         .result {
             margin-top: 20px;
-            padding: 15px;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 4px;
+            padding: 20px;
+            background: linear-gradient(45deg, #ffdf00, #ff9a00);
+            color: #121629;
+            border-radius: 8px;
             text-align: center;
-            font-size: 18px;
+            font-size: 24px;
             font-weight: bold;
             display: none;
+            box-shadow: 0 0 20px rgba(255, 223, 0, 0.6);
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            animation: resultPopIn 0.5s ease-out;
+        }
+        
+        @keyframes resultPopIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .flashing-lights {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 20;
+            pointer-events: none;
+            opacity: 0;
+        }
+        
+        @keyframes flashingLights {
+            0% { opacity: 0; }
+            25% { opacity: 0.7; background-color: rgba(255, 223, 0, 0.3); }
+            50% { opacity: 0.5; background-color: rgba(255, 82, 82, 0.3); }
+            75% { opacity: 0.7; background-color: rgba(82, 255, 168, 0.3); }
+            100% { opacity: 0; }
+        }
+        
+        .spin-count {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Bebas Neue', sans-serif;
+            color: #ffdf00;
+            font-size: 20px;
+        }
+        
+        /* Custom scrollbar for the options list */
+        .option-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .option-list::-webkit-scrollbar-track {
+            background: #1d2340;
+        }
+        
+        .option-list::-webkit-scrollbar-thumb {
+            background: #ffdf00;
+            border-radius: 4px;
         }
         
         @media (max-width: 500px) {
             .wheel-container {
-                width: 300px;
-                height: 300px;
+                width: 320px;
+                height: 320px;
+            }
+            
+            h1 {
+                font-size: 2rem;
             }
             
             .slice-text {
-                font-size: 12px;
-                width: 100px;
+                font-size: 10px;
+                width: 90px;
                 padding-right: 40px;
+            }
+            
+            .spinner {
+                width: 50px;
+                height: 50px;
+                font-size: 14px;
+            }
+            
+            .spinner::after {
+                top: -20px;
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+                border-bottom: 20px solid #ff5252;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Dinner Wheel of Fortune</h1>
+        <h1>DINNER WHEEL OF FORTUNE</h1>
         
         <div class="wheel-container">
             <div class="wheel" id="wheel"></div>
             <div class="spinner" id="spinner">SPIN</div>
+            <div class="peg-container">
+                <div class="peg"></div>
+            </div>
+            <div class="flashing-lights" id="flashing-lights"></div>
+            <div class="spin-count" id="spin-count"></div>
         </div>
         
         <div class="result" id="result"></div>
@@ -237,10 +378,8 @@
                 <button id="add-btn">Add</button>
             </div>
             
-            <button id="spin-btn">Spin the Wheel</button>
-            
             <div class="option-list">
-                <h3>Dinner Options</h3>
+                <h3>DINNER OPTIONS</h3>
                 <ul class="options" id="options-list"></ul>
             </div>
         </div>
@@ -256,7 +395,9 @@
             "Salad",
             "Stir Fry",
             "Sushi",
-            "Curry"
+            "Curry",
+            "Thai",
+            "BBQ"
         ];
         
         // Load options from localStorage if available
@@ -270,12 +411,12 @@
             updateOptionsList();
         });
         
-        // Colors for the wheel slices
+        // Colors for the wheel slices - Wheel of Fortune style
         const colors = [
-            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
-            '#9966FF', '#FF9F40', '#8AC24A', '#F44336',
-            '#9C27B0', '#3F51B5', '#03A9F4', '#009688',
-            '#FFC107', '#FF5722', '#795548', '#607D8B'
+            '#e15241', '#48a5ea', '#d8af3d', '#8061a9', 
+            '#75ba49', '#f5811e', '#2b75bb', '#e6331f',
+            '#f8d53d', '#5d50a6', '#6aaf4a', '#e6671f',
+            '#499cd5', '#d94033', '#e9c93f', '#9061a8'
         ];
         
         // Elements
@@ -283,9 +424,27 @@
         const spinner = document.getElementById('spinner');
         const newOptionInput = document.getElementById('new-option');
         const addBtn = document.getElementById('add-btn');
-        const spinBtn = document.getElementById('spin-btn');
         const optionsList = document.getElementById('options-list');
         const resultDiv = document.getElementById('result');
+        const flashingLights = document.getElementById('flashing-lights');
+        const spinCount = document.getElementById('spin-count');
+        
+        // Sound effects
+        let tickSound, celebrationSound;
+        
+        // Try to load sounds
+        try {
+            // We can't actually play sounds without user interaction,
+            // but we can prepare the audio objects
+            tickSound = new Audio();
+            celebrationSound = new Audio();
+        } catch (e) {
+            console.log("Audio not supported");
+        }
+        
+        // Wheel spin tracking
+        let isSpinning = false;
+        let spinCounter = 0;
         
         // Create the wheel
         function createWheel() {
@@ -302,12 +461,15 @@
                 const colorIndex = index % colors.length;
                 slice.style.backgroundColor = colors[colorIndex];
                 
-                // Add text
+                // Add text - abbreviated if needed
                 const text = document.createElement('div');
                 text.className = 'slice-text';
-                text.textContent = option;
-                slice.appendChild(text);
+                text.title = option; // Full name on hover
                 
+                // Show abbreviated text if too long
+                text.textContent = option.length > 8 ? option.substring(0, 8) + '...' : option;
+                
+                slice.appendChild(text);
                 wheel.appendChild(slice);
             });
         }
@@ -339,26 +501,59 @@
             });
         }
         
+        // Create ticker effect
+        function playTickerEffect() {
+            const pegs = document.querySelectorAll('.peg');
+            pegs.forEach(peg => {
+                peg.style.animation = 'tickSound 0.1s';
+                setTimeout(() => {
+                    peg.style.animation = '';
+                }, 100);
+            });
+        }
+        
         // Spin the wheel
         function spinWheel() {
+            if (isSpinning) return;
             if (dinnerOptions.length === 0) {
                 alert("Please add some dinner options first!");
                 return;
             }
             
-            // Disable spin button during animation
-            spinBtn.disabled = true;
-            spinner.style.pointerEvents = 'none';
+            // Set spinning state
+            isSpinning = true;
             
             // Hide previous result
             resultDiv.style.display = 'none';
             
-            // Random rotation between 5 and 10 full rotations plus random segment
+            // Increment spin counter
+            spinCounter++;
+            spinCount.textContent = `SPIN #${spinCounter}`;
+            
+            // Random rotation between 10 and 15 full rotations plus random segment
             const numOptions = dinnerOptions.length;
             const sliceAngle = 360 / numOptions;
             const randomSpin = Math.floor(Math.random() * numOptions);
             const extraDegrees = randomSpin * sliceAngle;
-            const totalDegrees = 1800 + extraDegrees;  // 5 full spins plus random
+            const totalDegrees = (3600 + Math.random() * 1800) + extraDegrees;  // 10-15 full spins plus random
+            
+            // Set up ticker sound effect interval
+            let tickInterval;
+            setTimeout(() => {
+                tickInterval = setInterval(playTickerEffect, 50);
+                setTimeout(() => {
+                    clearInterval(tickInterval);
+                    tickInterval = setInterval(playTickerEffect, 100);
+                    setTimeout(() => {
+                        clearInterval(tickInterval);
+                        tickInterval = setInterval(playTickerEffect, 200);
+                        setTimeout(() => {
+                            clearInterval(tickInterval);
+                            tickInterval = setInterval(playTickerEffect, 300);
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+            }, 500);
             
             // Apply rotation
             wheel.style.transform = `rotate(${totalDegrees}deg)`;
@@ -368,14 +563,22 @@
                 // Calculate result
                 const result = dinnerOptions[numOptions - 1 - randomSpin];
                 
+                // Clear any remaining intervals
+                clearInterval(tickInterval);
+                
+                // Show celebration effect
+                flashingLights.style.animation = 'flashingLights 1.5s';
+                setTimeout(() => {
+                    flashingLights.style.animation = '';
+                }, 1500);
+                
                 // Show result
-                resultDiv.textContent = `Tonight's Dinner: ${result}`;
+                resultDiv.textContent = `TONIGHT'S DINNER: ${result.toUpperCase()}`;
                 resultDiv.style.display = 'block';
                 
-                // Re-enable spin button
-                spinBtn.disabled = false;
-                spinner.style.pointerEvents = 'auto';
-            }, 5000);
+                // Reset spinning state
+                isSpinning = false;
+            }, 8000);
         }
         
         // Event listeners
@@ -398,7 +601,6 @@
             }
         });
         
-        spinBtn.addEventListener('click', spinWheel);
         spinner.addEventListener('click', spinWheel);
     </script>
 </body>
