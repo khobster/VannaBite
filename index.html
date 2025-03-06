@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinner Wheel of Fortune</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .wheel-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 20px 0;
+        }
+        
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.21, 1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .wheel-slice {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: bottom right;
+            left: 0;
+            top: 0;
+            border: 1px solid #fff;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .slice-text {
+            transform-origin: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            position: absolute;
+            width: 140px;
+            text-align: right;
+            right: 0;
+            padding-right: 50px;
+            font-size: 14px;
+            transform: rotate(90deg) translateY(-50%);
+        }
+        
+        .spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background-color: #fff;
+            border-radius: 50%;
+            z-index: 10;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .spinner::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 20px solid #ff5252;
+        }
+        
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .input-group {
+            display: flex;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        
+        input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .option-list {
+            margin-top: 20px;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        
+        .option-list h3 {
+            text-align: center;
+            padding: 10px;
+            margin: 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .options {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .option-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .option-item:last-child {
+            border-bottom: none;
+        }
+        
+        .delete-btn {
+            background-color: #ff5252;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .delete-btn:hover {
+            background-color: #ff3333;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        @media (max-width: 500px) {
+            .wheel-container {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .slice-text {
+                font-size: 12px;
+                width: 100px;
+                padding-right: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dinner Wheel of Fortune</h1>
+        
+        <div class="wheel-container">
+            <div class="wheel" id="wheel"></div>
+            <div class="spinner" id="spinner">SPIN</div>
+        </div>
+        
+        <div class="result" id="result"></div>
+        
+        <div class="controls">
+            <div class="input-group">
+                <input type="text" id="new-option" placeholder="Add a new dinner option...">
+                <button id="add-btn">Add</button>
+            </div>
+            
+            <button id="spin-btn">Spin the Wheel</button>
+            
+            <div class="option-list">
+                <h3>Dinner Options</h3>
+                <ul class="options" id="options-list"></ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Default dinner options
+        let dinnerOptions = [
+            "Pizza",
+            "Tacos",
+            "Pasta",
+            "Burgers",
+            "Salad",
+            "Stir Fry",
+            "Sushi",
+            "Curry"
+        ];
+        
+        // Load options from localStorage if available
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedOptions = localStorage.getItem('dinnerOptions');
+            if (savedOptions) {
+                dinnerOptions = JSON.parse(savedOptions);
+            }
+            
+            createWheel();
+            updateOptionsList();
+        });
+        
+        // Colors for the wheel slices
+        const colors = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+            '#9966FF', '#FF9F40', '#8AC24A', '#F44336',
+            '#9C27B0', '#3F51B5', '#03A9F4', '#009688',
+            '#FFC107', '#FF5722', '#795548', '#607D8B'
+        ];
+        
+        // Elements
+        const wheel = document.getElementById('wheel');
+        const spinner = document.getElementById('spinner');
+        const newOptionInput = document.getElementById('new-option');
+        const addBtn = document.getElementById('add-btn');
+        const spinBtn = document.getElementById('spin-btn');
+        const optionsList = document.getElementById('options-list');
+        const resultDiv = document.getElementById('result');
+        
+        // Create the wheel
+        function createWheel() {
+            wheel.innerHTML = '';
+            
+            // Create slices for each option
+            dinnerOptions.forEach((option, index) => {
+                const slice = document.createElement('div');
+                const angle = 360 / dinnerOptions.length;
+                slice.className = 'wheel-slice';
+                slice.style.transform = `rotate(${index * angle}deg)`;
+                
+                // Set background color
+                const colorIndex = index % colors.length;
+                slice.style.backgroundColor = colors[colorIndex];
+                
+                // Add text
+                const text = document.createElement('div');
+                text.className = 'slice-text';
+                text.textContent = option;
+                slice.appendChild(text);
+                
+                wheel.appendChild(slice);
+            });
+        }
+        
+        // Update the options list
+        function updateOptionsList() {
+            optionsList.innerHTML = '';
+            
+            dinnerOptions.forEach((option, index) => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+                
+                const span = document.createElement('span');
+                span.textContent = option;
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = 'X';
+                deleteBtn.onclick = function() {
+                    dinnerOptions.splice(index, 1);
+                    localStorage.setItem('dinnerOptions', JSON.stringify(dinnerOptions));
+                    createWheel();
+                    updateOptionsList();
+                };
+                
+                li.appendChild(span);
+                li.appendChild(deleteBtn);
+                optionsList.appendChild(li);
+            });
+        }
+        
+        // Spin the wheel
+        function spinWheel() {
+            if (dinnerOptions.length === 0) {
+                alert("Please add some dinner options first!");
+                return;
+            }
+            
+            // Disable spin button during animation
+            spinBtn.disabled = true;
+            spinner.style.pointerEvents = 'none';
+            
+            // Hide previous result
+            resultDiv.style.display = 'none';
+            
+            // Random rotation between 5 and 10 full rotations plus random segment
+            const numOptions = dinnerOptions.length;
+            const sliceAngle = 360 / numOptions;
+            const randomSpin = Math.floor(Math.random() * numOptions);
+            const extraDegrees = randomSpin * sliceAngle;
+            const totalDegrees = 1800 + extraDegrees;  // 5 full spins plus random
+            
+            // Apply rotation
+            wheel.style.transform = `rotate(${totalDegrees}deg)`;
+            
+            // Wait for animation to finish
+            setTimeout(() => {
+                // Calculate result
+                const result = dinnerOptions[numOptions - 1 - randomSpin];
+                
+                // Show result
+                resultDiv.textContent = `Tonight's Dinner: ${result}`;
+                resultDiv.style.display = 'block';
+                
+                // Re-enable spin button
+                spinBtn.disabled = false;
+                spinner.style.pointerEvents = 'auto';
+            }, 5000);
+        }
+        
+        // Event listeners
+        addBtn.addEventListener('click', function() {
+            const newOption = newOptionInput.value.trim();
+            if (newOption && !dinnerOptions.includes(newOption)) {
+                dinnerOptions.push(newOption);
+                localStorage.setItem('dinnerOptions', JSON.stringify(dinnerOptions));
+                newOptionInput.value = '';
+                createWheel();
+                updateOptionsList();
+            } else if (dinnerOptions.includes(newOption)) {
+                alert("That option already exists!");
+            }
+        });
+        
+        newOptionInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addBtn.click();
+            }
+        });
+        
+        spinBtn.addEventListener('click', spinWheel);
+        spinner.addEventListener('click', spinWheel);
+    </script>
+</body>
+</html>
