@@ -23,7 +23,7 @@
         h1 {
             font-family: 'Bebas Neue', sans-serif;
             color: #ffdf00;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             text-align: center;
             font-size: 3.5rem;
             text-shadow: 0 0 10px rgba(255, 255, 0, 0.7), 
@@ -35,15 +35,29 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
+        }
+        
+        .game-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+        }
+        
+        .vanna-container {
+            width: 180px;
+            height: 280px;
+            position: relative;
         }
         
         .wheel-container {
             position: relative;
-            width: 450px;
-            height: 450px;
-            margin: 40px 0;
+            width: 400px;
+            height: 400px;
+            margin: 20px 0;
         }
         
         .wheel {
@@ -59,35 +73,13 @@
             box-sizing: border-box;
         }
         
-        .wheel-slice {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 50%);
-            transform-origin: center center;
-        }
-        
-        .slice-label {
-            position: absolute;
-            left: 75%;
-            top: 25%;
-            transform: rotate(90deg) translateX(-50%);
-            transform-origin: left center;
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 14px;
-            color: #000;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-            white-space: nowrap;
-            pointer-events: none;
-        }
-        
         .spinner {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             background-color: #ffdf00;
             border-radius: 50%;
             z-index: 10;
@@ -98,7 +90,7 @@
             justify-content: center;
             font-weight: bold;
             color: #000;
-            font-size: 22px;
+            font-size: 20px;
             border: 5px solid white;
             transition: all 0.3s ease;
             font-family: 'Bebas Neue', sans-serif;
@@ -116,15 +108,15 @@
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-top: 40px solid #f93838;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 35px solid #f93838;
             filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.5));
             z-index: 15;
         }
         
         .controls {
-            margin-top: 30px;
+            margin-top: 20px;
             display: flex;
             flex-direction: column;
             width: 100%;
@@ -174,7 +166,7 @@
         .option-list {
             margin-top: 20px;
             width: 100%;
-            max-height: 200px;
+            max-height: 180px;
             overflow-y: auto;
             border: 2px solid #483d8b;
             border-radius: 4px;
@@ -202,7 +194,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 15px;
+            padding: 8px 15px;
             border-bottom: 1px solid #483d8b;
         }
         
@@ -282,12 +274,12 @@
         
         .spin-count {
             position: absolute;
-            bottom: -40px;
+            bottom: -35px;
             left: 50%;
             transform: translateX(-50%);
             font-family: 'Bebas Neue', sans-serif;
             color: #ffdf00;
-            font-size: 24px;
+            font-size: 22px;
             text-shadow: 0 0 10px rgba(255, 223, 0, 0.5);
         }
         
@@ -298,7 +290,98 @@
             margin-top: 5px;
         }
         
-        /* Custom scrollbar for the options list */
+        /* Vanna Character Styles */
+        .vanna-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Idle animation */
+        @keyframes vannaIdle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        
+        .vanna-container.idle .vanna-svg {
+            animation: vannaIdle 3s ease-in-out infinite;
+        }
+        
+        /* Watching/anticipation animation */
+        @keyframes vannaWatch {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+        
+        .vanna-container.watching .vanna-svg {
+            animation: vannaWatch 0.3s ease-in-out infinite;
+        }
+        
+        /* Celebration animation */
+        @keyframes vannaCelebrate {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(-5deg); }
+            75% { transform: translateY(-15px) rotate(5deg); }
+        }
+        
+        .vanna-container.celebrating .vanna-svg {
+            animation: vannaCelebrate 0.4s ease-in-out infinite;
+        }
+        
+        /* Eye animations */
+        @keyframes eyesWatch {
+            0%, 100% { transform: translateX(-2px); }
+            50% { transform: translateX(2px); }
+        }
+        
+        .vanna-container.watching .vanna-eyes {
+            animation: eyesWatch 0.2s ease-in-out infinite;
+        }
+        
+        @keyframes eyesCelebrate {
+            0%, 50%, 100% { transform: scaleY(1); }
+            25%, 75% { transform: scaleY(0.3); }
+        }
+        
+        .vanna-container.celebrating .vanna-eyes {
+            animation: eyesCelebrate 0.3s ease-in-out infinite;
+        }
+        
+        /* Sparkles for celebration */
+        .sparkles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            opacity: 0;
+        }
+        
+        .vanna-container.celebrating .sparkles {
+            opacity: 1;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffdf00;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+        
+        .sparkle:nth-child(1) { top: 10%; left: 10%; animation: sparkle 0.6s ease-in-out infinite 0s; }
+        .sparkle:nth-child(2) { top: 5%; left: 80%; animation: sparkle 0.6s ease-in-out infinite 0.1s; }
+        .sparkle:nth-child(3) { top: 30%; left: 5%; animation: sparkle 0.6s ease-in-out infinite 0.2s; }
+        .sparkle:nth-child(4) { top: 25%; left: 90%; animation: sparkle 0.6s ease-in-out infinite 0.3s; }
+        .sparkle:nth-child(5) { top: 50%; left: 0%; animation: sparkle 0.6s ease-in-out infinite 0.15s; }
+        .sparkle:nth-child(6) { top: 45%; left: 95%; animation: sparkle 0.6s ease-in-out infinite 0.25s; }
+        
+        /* Custom scrollbar */
         .option-list::-webkit-scrollbar {
             width: 8px;
         }
@@ -312,10 +395,19 @@
             border-radius: 4px;
         }
         
-        @media (max-width: 500px) {
+        @media (max-width: 700px) {
+            .game-area {
+                flex-direction: column;
+            }
+            
+            .vanna-container {
+                width: 120px;
+                height: 180px;
+            }
+            
             .wheel-container {
-                width: 320px;
-                height: 320px;
+                width: 300px;
+                height: 300px;
             }
             
             h1 {
@@ -323,15 +415,15 @@
             }
             
             .spinner {
-                width: 60px;
-                height: 60px;
-                font-size: 18px;
+                width: 55px;
+                height: 55px;
+                font-size: 16px;
             }
             
             .pointer {
-                border-left: 15px solid transparent;
-                border-right: 15px solid transparent;
-                border-top: 30px solid #f93838;
+                border-left: 14px solid transparent;
+                border-right: 14px solid transparent;
+                border-top: 28px solid #f93838;
             }
         }
     </style>
@@ -340,12 +432,111 @@
     <div class="container">
         <h1>VANNA BITE</h1>
         
-        <div class="wheel-container">
-            <div class="wheel" id="wheel"></div>
-            <div class="spinner" id="spinner">SPIN</div>
-            <div class="pointer"></div>
-            <div class="flashing-lights" id="flashing-lights"></div>
-            <div class="spin-count" id="spin-count">SPIN #1</div>
+        <div class="game-area">
+            <div class="vanna-container idle" id="vanna-container">
+                <!-- Low-poly Vanna character -->
+                <svg class="vanna-svg" viewBox="0 0 180 280" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Hair back -->
+                    <polygon points="30,80 150,80 160,140 145,200 35,200 20,140" fill="#D4A574"/>
+                    
+                    <!-- Neck -->
+                    <polygon points="70,195 110,195 115,240 65,240" fill="#FFD5B8"/>
+                    <polygon points="70,195 90,200 65,240" fill="#F5C5A0"/>
+                    
+                    <!-- Dress/Shoulders -->
+                    <polygon points="40,235 140,235 160,280 20,280" fill="#E91E63"/>
+                    <polygon points="40,235 90,250 20,280" fill="#C2185B"/>
+                    <polygon points="140,235 90,250 160,280" fill="#AD1457"/>
+                    
+                    <!-- Sparkly dress details -->
+                    <circle cx="60" cy="260" r="3" fill="#FF80AB"/>
+                    <circle cx="100" cy="255" r="2" fill="#FF80AB"/>
+                    <circle cx="130" cy="265" r="3" fill="#FF80AB"/>
+                    <circle cx="80" cy="270" r="2" fill="#FF80AB"/>
+                    
+                    <!-- Face base -->
+                    <polygon points="50,90 130,90 140,150 130,190 50,190 40,150" fill="#FFD5B8"/>
+                    <!-- Face shadow -->
+                    <polygon points="50,90 70,95 60,150 50,190 40,150" fill="#F5C5A0"/>
+                    <polygon points="130,90 110,95 120,150 130,190 140,150" fill="#F5C5A0"/>
+                    
+                    <!-- Hair front/bangs -->
+                    <polygon points="35,80 145,80 140,95 130,85 110,90 90,85 70,90 50,85 40,95" fill="#D4A574"/>
+                    <polygon points="35,80 50,110 40,130 25,100" fill="#C49A6C"/>
+                    <polygon points="145,80 130,110 140,130 155,100" fill="#C49A6C"/>
+                    
+                    <!-- Hair highlights -->
+                    <polygon points="45,85 55,100 50,85" fill="#E0B88A"/>
+                    <polygon points="125,85 135,100 130,85" fill="#E0B88A"/>
+                    
+                    <!-- Eyebrows -->
+                    <polygon points="58,115 82,112 82,116 58,119" fill="#8B6914"/>
+                    <polygon points="98,112 122,115 122,119 98,116" fill="#8B6914"/>
+                    
+                    <!-- Eyes group -->
+                    <g class="vanna-eyes">
+                        <!-- Left eye white -->
+                        <ellipse cx="70" cy="130" rx="14" ry="10" fill="white"/>
+                        <!-- Right eye white -->
+                        <ellipse cx="110" cy="130" rx="14" ry="10" fill="white"/>
+                        <!-- Left iris -->
+                        <circle cx="70" cy="130" r="7" fill="#4A90D9"/>
+                        <!-- Right iris -->
+                        <circle cx="110" cy="130" r="7" fill="#4A90D9"/>
+                        <!-- Left pupil -->
+                        <circle cx="70" cy="130" r="3" fill="#1a1442"/>
+                        <!-- Right pupil -->
+                        <circle cx="110" cy="130" r="3" fill="#1a1442"/>
+                        <!-- Eye sparkles -->
+                        <circle cx="73" cy="127" r="2" fill="white"/>
+                        <circle cx="113" cy="127" r="2" fill="white"/>
+                    </g>
+                    
+                    <!-- Eyelashes -->
+                    <path d="M56,125 L52,120" stroke="#1a1442" stroke-width="2"/>
+                    <path d="M60,122 L57,116" stroke="#1a1442" stroke-width="2"/>
+                    <path d="M124,125 L128,120" stroke="#1a1442" stroke-width="2"/>
+                    <path d="M120,122 L123,116" stroke="#1a1442" stroke-width="2"/>
+                    
+                    <!-- Nose -->
+                    <polygon points="90,135 85,155 90,158 95,155" fill="#F5C5A0"/>
+                    
+                    <!-- Mouth - will be swapped for different expressions -->
+                    <g class="vanna-mouth" id="vanna-mouth">
+                        <!-- Default smile -->
+                        <path d="M70,170 Q90,182 110,170" stroke="#C44569" stroke-width="3" fill="none" id="mouth-line"/>
+                        <ellipse cx="90" cy="173" rx="12" ry="6" fill="#C44569" id="mouth-fill"/>
+                    </g>
+                    
+                    <!-- Blush -->
+                    <ellipse cx="55" cy="155" rx="10" ry="6" fill="#FFB3BA" opacity="0.5"/>
+                    <ellipse cx="125" cy="155" rx="10" ry="6" fill="#FFB3BA" opacity="0.5"/>
+                    
+                    <!-- Earrings -->
+                    <circle cx="38" cy="145" r="6" fill="#ffdf00"/>
+                    <circle cx="142" cy="145" r="6" fill="#ffdf00"/>
+                    <circle cx="38" cy="145" r="3" fill="#fff"/>
+                    <circle cx="142" cy="145" r="3" fill="#fff"/>
+                </svg>
+                
+                <!-- Celebration sparkles -->
+                <div class="sparkles">
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                </div>
+            </div>
+            
+            <div class="wheel-container">
+                <div class="wheel" id="wheel"></div>
+                <div class="spinner" id="spinner">SPIN</div>
+                <div class="pointer"></div>
+                <div class="flashing-lights" id="flashing-lights"></div>
+                <div class="spin-count" id="spin-count">SPIN #1</div>
+            </div>
         </div>
         
         <div class="result" id="result"></div>
@@ -389,24 +580,19 @@
             updateOptionsList();
         });
         
-        // Vibrant colors for the wheel slices - cycles through for unlimited options
-        const colors = [
-            '#FF00FF', // Bright magenta
-            '#FFFF00', // Bright yellow
-            '#00FF00', // Bright green
-            '#00FFFF', // Cyan
-            '#FF8000', // Orange
-            '#FF0080', // Hot pink
-            '#00FF80', // Seafoam green
-            '#8000FF', // Purple
-            '#0080FF', // Bright blue
-            '#FF4444', // Red
-            '#44FF44', // Light green
-            '#4444FF', // Blue
-            '#FFAA00', // Gold
-            '#AA00FF', // Violet
-            '#00FFAA'  // Teal
-        ];
+        // Generate unique colors for ANY number of slices using HSL
+        function generateUniqueColors(count) {
+            const colors = [];
+            for (let i = 0; i < count; i++) {
+                // Spread hues evenly across the color wheel (0-360)
+                const hue = (i * 360 / count) % 360;
+                // Alternate saturation and lightness for extra variety
+                const saturation = 75 + (i % 3) * 8; // 75-91%
+                const lightness = 55 + (i % 2) * 10; // 55-65%
+                colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+            }
+            return colors;
+        }
         
         // Elements
         const wheel = document.getElementById('wheel');
@@ -418,70 +604,85 @@
         const flashingLights = document.getElementById('flashing-lights');
         const spinCount = document.getElementById('spin-count');
         const optionCount = document.getElementById('option-count');
+        const vannaContainer = document.getElementById('vanna-container');
+        const vannaMouth = document.getElementById('vanna-mouth');
         
         // Wheel spin tracking
         let isSpinning = false;
         let spinCounter = 1;
         let currentRotation = 0;
+        let sliceColors = [];
         
-        // Create the wheel - NOW SUPPORTS UNLIMITED OPTIONS!
+        // Vanna expressions
+        function setVannaExpression(expression) {
+            vannaContainer.className = 'vanna-container ' + expression;
+            
+            // Change mouth based on expression
+            if (expression === 'idle') {
+                vannaMouth.innerHTML = `
+                    <path d="M70,170 Q90,182 110,170" stroke="#C44569" stroke-width="3" fill="none"/>
+                    <ellipse cx="90" cy="173" rx="12" ry="6" fill="#C44569"/>
+                `;
+            } else if (expression === 'watching') {
+                vannaMouth.innerHTML = `
+                    <ellipse cx="90" cy="172" rx="8" ry="10" fill="#C44569"/>
+                    <ellipse cx="90" cy="170" rx="6" ry="4" fill="#8B2942"/>
+                `;
+            } else if (expression === 'celebrating') {
+                vannaMouth.innerHTML = `
+                    <ellipse cx="90" cy="175" rx="18" ry="12" fill="#C44569"/>
+                    <ellipse cx="90" cy="172" rx="14" ry="6" fill="#8B2942"/>
+                    <path d="M76,170 Q90,165 104,170" stroke="white" stroke-width="3" fill="none"/>
+                `;
+            }
+        }
+        
+        // Create the wheel with UNIQUE colors for each slice
         function createWheel() {
             wheel.innerHTML = '';
             
             const numOptions = dinnerOptions.length;
-            if (numOptions === 0) return;
+            if (numOptions === 0) {
+                wheel.style.background = '#2a1f63';
+                return;
+            }
+            
+            // Generate unique colors for each slice
+            sliceColors = generateUniqueColors(numOptions);
             
             const sliceAngle = 360 / numOptions;
             
-            dinnerOptions.forEach((option, index) => {
-                const slice = document.createElement('div');
-                slice.className = 'wheel-slice';
-                
-                // Calculate rotation for this slice
-                const rotation = index * sliceAngle;
-                
-                // Create clip path for the exact slice angle
-                const startAngle = -sliceAngle / 2;
-                const endAngle = sliceAngle / 2;
-                
-                // For proper pie slices, we use conic-gradient
-                slice.style.background = colors[index % colors.length];
-                slice.style.clipPath = `polygon(50% 50%, ${50 + 50 * Math.sin(startAngle * Math.PI / 180)}% ${50 - 50 * Math.cos(startAngle * Math.PI / 180)}%, ${50 + 50 * Math.sin(endAngle * Math.PI / 180)}% ${50 - 50 * Math.cos(endAngle * Math.PI / 180)}%)`;
-                slice.style.transform = `rotate(${rotation}deg)`;
-                
-                wheel.appendChild(slice);
-            });
-            
-            // Alternative: Use conic-gradient for cleaner look
+            // Build conic gradient with unique colors
             let gradientStops = [];
-            dinnerOptions.forEach((option, index) => {
+            sliceColors.forEach((color, index) => {
                 const startPercent = (index / numOptions) * 100;
                 const endPercent = ((index + 1) / numOptions) * 100;
-                const color = colors[index % colors.length];
                 gradientStops.push(`${color} ${startPercent}% ${endPercent}%`);
             });
             
             wheel.style.background = `conic-gradient(from -90deg, ${gradientStops.join(', ')})`;
-            wheel.innerHTML = ''; // Clear the polygon slices, use gradient instead
             
             // Add slice dividers
-            dinnerOptions.forEach((option, index) => {
+            for (let i = 0; i < numOptions; i++) {
                 const divider = document.createElement('div');
                 divider.style.position = 'absolute';
                 divider.style.width = '2px';
                 divider.style.height = '50%';
-                divider.style.background = 'rgba(255,255,255,0.5)';
+                divider.style.background = 'rgba(255,255,255,0.6)';
                 divider.style.left = '50%';
                 divider.style.top = '0';
                 divider.style.transformOrigin = 'bottom center';
-                divider.style.transform = `translateX(-50%) rotate(${index * sliceAngle}deg)`;
+                divider.style.transform = `translateX(-50%) rotate(${i * sliceAngle}deg)`;
                 wheel.appendChild(divider);
-            });
+            }
         }
         
         // Update the options list
         function updateOptionsList() {
             optionsList.innerHTML = '';
+            
+            // Regenerate colors to match current options
+            const colors = generateUniqueColors(dinnerOptions.length);
             
             dinnerOptions.forEach((option, index) => {
                 const li = document.createElement('li');
@@ -491,7 +692,7 @@
                 
                 const colorDot = document.createElement('div');
                 colorDot.className = 'color-dot';
-                colorDot.style.backgroundColor = colors[index % colors.length];
+                colorDot.style.backgroundColor = colors[index];
                 
                 const text = document.createTextNode(option);
                 
@@ -513,7 +714,6 @@
                 optionsList.appendChild(li);
             });
             
-            // Update count display
             optionCount.textContent = `${dinnerOptions.length} option${dinnerOptions.length !== 1 ? 's' : ''} loaded`;
         }
         
@@ -530,52 +730,51 @@
                 return;
             }
             
-            // Set spinning state
             isSpinning = true;
-            
-            // Hide previous result
             resultDiv.style.display = 'none';
             
-            // Update spin counter
+            // Vanna starts watching excitedly
+            setVannaExpression('watching');
+            
             spinCount.textContent = `SPIN #${spinCounter}`;
             spinCounter++;
             
-            // Calculate spin - NO MORE 9 OPTION LIMIT!
             const numOptions = dinnerOptions.length;
             const sliceAngle = 360 / numOptions;
             
             // Pick a random winning slice
             const winningIndex = Math.floor(Math.random() * numOptions);
             
-            // Calculate degrees needed to land on that slice
-            // The pointer is at the top (0 degrees), so we need to rotate the wheel
-            // so that the winning slice ends up at the top
+            // Calculate degrees to land on that slice
             const targetAngle = winningIndex * sliceAngle + sliceAngle / 2;
             
-            // Add multiple full rotations for effect (10-15 spins)
+            // Add multiple full rotations (10-15 spins)
             const fullSpins = 10 + Math.floor(Math.random() * 5);
             const totalDegrees = currentRotation + (fullSpins * 360) + (360 - targetAngle);
             
-            // Store current rotation for next spin
             currentRotation = totalDegrees;
             
-            // Apply rotation
             wheel.style.transform = `rotate(${totalDegrees}deg)`;
             
             // Wait for animation to finish
             setTimeout(() => {
-                // Show celebration effect
+                // Vanna celebrates!
+                setVannaExpression('celebrating');
+                
                 flashingLights.style.animation = 'flashingLights 1.5s';
                 setTimeout(() => {
                     flashingLights.style.animation = '';
                 }, 1500);
                 
-                // Show result
                 const result = dinnerOptions[winningIndex];
                 resultDiv.textContent = `TONIGHT'S DINNER: ${result.toUpperCase()}`;
                 resultDiv.style.display = 'block';
                 
-                // Reset spinning state
+                // Vanna returns to idle after celebration
+                setTimeout(() => {
+                    setVannaExpression('idle');
+                }, 4000);
+                
                 isSpinning = false;
             }, 8000);
         }
