@@ -7,6 +7,8 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
         
+        * { box-sizing: border-box; }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
@@ -26,443 +28,191 @@
             margin-bottom: 10px;
             text-align: center;
             font-size: 3.5rem;
-            text-shadow: 0 0 10px rgba(255, 255, 0, 0.7), 
-                         0 0 20px rgba(255, 255, 0, 0.5);
+            text-shadow: 0 0 10px rgba(255, 255, 0, 0.7), 0 0 20px rgba(255, 255, 0, 0.5);
             letter-spacing: 2px;
         }
         
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 1000px;
-            width: 100%;
-        }
+        .container { display: flex; flex-direction: column; align-items: center; max-width: 1000px; width: 100%; }
+        .game-area { display: flex; align-items: center; justify-content: center; gap: 30px; width: 100%; }
         
-        .game-area {
+        /* VANNA IMAGE CONTAINER */
+        .vanna-container { 
+            width: 250px; 
+            height: 380px; 
+            position: relative; 
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 30px;
+        }
+
+        .vanna-img {
             width: 100%;
+            height: auto;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+            /* Base transition for smooth movements */
+            transition: transform 0.2s;
         }
         
-        .vanna-container {
-            width: 220px;
-            height: 450px;
-            position: relative;
-            flex-shrink: 0;
-        }
-        
-        .wheel-container {
-            position: relative;
-            width: 400px;
-            height: 400px;
-            margin: 20px 0;
-        }
+        .wheel-container { position: relative; width: 400px; height: 400px; margin: 20px 0; }
         
         .wheel {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             border-radius: 50%;
             position: relative;
             overflow: hidden;
             transition: transform 8s cubic-bezier(0.17, 0.97, 0.12, 1);
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4), 
-                        0 0 40px rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4), 0 0 40px rgba(0, 255, 0, 0.2);
             border: 15px solid #0a8f45;
-            box-sizing: border-box;
         }
         
         .spinner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 70px;
-            height: 70px;
+            width: 70px; height: 70px;
             background-color: #ffdf00;
-            border-radius: 50%;
-            z-index: 10;
+            border-radius: 50%; z-index: 10;
             box-shadow: 0 0 10px rgba(255, 223, 0, 0.8);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #000;
-            font-size: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: #000; font-size: 20px;
             border: 5px solid white;
-            transition: all 0.3s ease;
             font-family: 'Bebas Neue', sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        
-        .spinner:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-            box-shadow: 0 0 20px rgba(255, 223, 0, 1);
-        }
+        .spinner:hover { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 20px rgba(255, 223, 0, 1); }
         
         .pointer {
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 18px solid transparent;
-            border-right: 18px solid transparent;
+            position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 18px solid transparent; border-right: 18px solid transparent;
             border-top: 35px solid #f93838;
             filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.5));
             z-index: 15;
         }
         
-        .controls {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .input-group {
-            display: flex;
-            margin-bottom: 15px;
-            width: 100%;
-        }
+        .controls { margin-top: 20px; display: flex; flex-direction: column; width: 100%; max-width: 400px; }
+        .input-group { display: flex; margin-bottom: 15px; width: 100%; }
         
         input {
-            flex-grow: 1;
-            padding: 12px;
-            border: 2px solid #ffdf00;
-            border-radius: 4px;
-            margin-right: 10px;
-            font-size: 16px;
-            background-color: #2a1f63;
-            color: white;
+            flex-grow: 1; padding: 12px;
+            border: 2px solid #ffdf00; border-radius: 4px;
+            margin-right: 10px; font-size: 16px;
+            background-color: #2a1f63; color: white;
         }
-        
-        input::placeholder {
-            color: #aaa;
-        }
+        input::placeholder { color: #aaa; }
         
         button {
-            padding: 10px 15px;
-            background-color: #ffdf00;
-            color: #000;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s;
+            padding: 10px 15px; background-color: #ffdf00; color: #000;
+            border: none; border-radius: 4px; cursor: pointer;
+            font-size: 16px; font-weight: bold;
             box-shadow: 0 0 10px rgba(255, 223, 0, 0.4);
-        }
-        
-        button:hover {
-            background-color: #ffeb3b;
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(255, 223, 0, 0.6);
-        }
-        
-        .option-list {
-            margin-top: 20px;
-            width: 100%;
-            max-height: 180px;
-            overflow-y: auto;
-            border: 2px solid #483d8b;
-            border-radius: 4px;
-            background-color: #2a1f63;
-        }
-        
-        .option-list h3 {
-            text-align: center;
-            padding: 10px;
-            margin: 0;
-            border-bottom: 2px solid #483d8b;
-            font-family: 'Bebas Neue', sans-serif;
-            color: #ffdf00;
-            letter-spacing: 1px;
-            font-size: 1.5rem;
-        }
-        
-        .options {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .option-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 15px;
-            border-bottom: 1px solid #483d8b;
-        }
-        
-        .option-item:last-child {
-            border-bottom: none;
-        }
-        
-        .option-item span {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .color-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        
-        .delete-btn {
-            background-color: #ff5252;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 2px 8px;
-            cursor: pointer;
-            font-size: 14px;
             transition: all 0.2s;
         }
+        button:hover { background-color: #ffeb3b; transform: scale(1.05); }
         
-        .delete-btn:hover {
-            background-color: #ff3333;
-            transform: scale(1.1);
+        .option-list {
+            margin-top: 20px; width: 100%; max-height: 180px;
+            overflow-y: auto; border: 2px solid #483d8b;
+            border-radius: 4px; background-color: #2a1f63;
         }
+        .option-list h3 {
+            text-align: center; padding: 10px; margin: 0;
+            border-bottom: 2px solid #483d8b;
+            font-family: 'Bebas Neue', sans-serif;
+            color: #ffdf00; font-size: 1.5rem;
+        }
+        .options { list-style: none; padding: 0; margin: 0; }
+        .option-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 15px; border-bottom: 1px solid #483d8b;
+        }
+        .option-item:last-child { border-bottom: none; }
+        .option-item span { display: flex; align-items: center; gap: 10px; }
+        .color-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); }
+        .delete-btn { background-color: #ff5252; color: white; padding: 3px 10px; font-size: 14px; }
+        .delete-btn:hover { background-color: #ff3333; }
         
         .result {
-            margin-top: 20px;
-            padding: 20px;
+            margin-top: 20px; padding: 20px;
             background: linear-gradient(45deg, #ffdf00, #ff9a00);
-            color: #000;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
+            color: #000; border-radius: 8px;
+            text-align: center; font-size: 24px; font-weight: bold;
             display: none;
             box-shadow: 0 0 20px rgba(255, 223, 0, 0.6);
             font-family: 'Bebas Neue', sans-serif;
-            letter-spacing: 1px;
-            animation: resultPopIn 0.5s ease-out;
+            animation: popIn 0.5s ease-out;
         }
-        
-        @keyframes resultPopIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         
         .flashing-lights {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 20;
-            pointer-events: none;
-            opacity: 0;
-            border-radius: 50%;
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+            z-index: 20; pointer-events: none; opacity: 0; border-radius: 50%;
         }
-        
-        @keyframes flashingLights {
+        @keyframes flash {
             0% { opacity: 0; }
-            25% { opacity: 0.7; background-color: rgba(255, 223, 0, 0.3); }
-            50% { opacity: 0.5; background-color: rgba(255, 82, 82, 0.3); }
-            75% { opacity: 0.7; background-color: rgba(82, 255, 168, 0.3); }
+            25% { opacity: 0.6; background: rgba(255, 223, 0, 0.3); }
+            50% { opacity: 0.4; background: rgba(255, 82, 82, 0.3); }
+            75% { opacity: 0.6; background: rgba(82, 255, 168, 0.3); }
             100% { opacity: 0; }
         }
         
         .spin-count {
-            position: absolute;
-            bottom: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Bebas Neue', sans-serif;
-            color: #ffdf00;
-            font-size: 22px;
-            text-shadow: 0 0 10px rgba(255, 223, 0, 0.5);
+            position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%);
+            font-family: 'Bebas Neue', sans-serif; color: #ffdf00; font-size: 22px;
+        }
+        .option-count { text-align: center; color: #aaa; font-size: 14px; margin-top: 5px; }
+        
+        /* NEW IMAGE ANIMATIONS (South Park Cutout Style) */
+        
+        /* Idle: Gentle bobbing */
+        @keyframes imgIdle { 
+            0%, 100% { transform: translateY(0) rotate(0deg); } 
+            50% { transform: translateY(-5px) rotate(1deg); } 
         }
         
-        .option-count {
-            text-align: center;
-            color: #aaa;
-            font-size: 14px;
-            margin-top: 5px;
+        /* Watching: Fast nervous vibration/bounce */
+        @keyframes imgWatching { 
+            0% { transform: translate(0, 0) rotate(0deg); } 
+            25% { transform: translate(-2px, 3px) rotate(-2deg); }
+            50% { transform: translate(2px, -3px) rotate(2deg); }
+            75% { transform: translate(-2px, 3px) rotate(-1deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        /* Celebrating: Happy big bouncing dance */
+        @keyframes imgCelebrate { 
+            0%, 100% { transform: translateY(0) scale(1) rotate(0deg); } 
+            25% { transform: translateY(-15px) scale(1.05) rotate(-5deg); }
+            50% { transform: translateY(0) scale(1) rotate(0deg); }
+            75% { transform: translateY(-15px) scale(1.05) rotate(5deg); }
         }
         
-        /* Vanna Character Styles */
-        .vanna-svg {
-            width: 100%;
-            height: 100%;
-        }
+        .vanna-container.idle .vanna-img { animation: imgIdle 3s ease-in-out infinite; }
+        .vanna-container.watching .vanna-img { animation: imgWatching 0.2s linear infinite; }
+        .vanna-container.celebrating .vanna-img { animation: imgCelebrate 0.5s ease-in-out infinite; }
         
-        /* Idle animation - gentle sway */
-        @keyframes vannaIdle {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-5px) rotate(1deg); }
-        }
-        
-        .vanna-container.idle .vanna-svg {
-            animation: vannaIdle 3s ease-in-out infinite;
-        }
-        
-        /* Presenting arm animation */
-        @keyframes armPresent {
-            0%, 100% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
-        }
-        
-        .vanna-container.idle .presenting-arm {
-            animation: armPresent 2s ease-in-out infinite;
-        }
-        
-        /* Watching animation - excited bouncing */
-        @keyframes vannaWatch {
-            0%, 100% { transform: translateY(0) rotate(-2deg); }
-            25% { transform: translateY(-8px) rotate(0deg); }
-            50% { transform: translateY(0) rotate(2deg); }
-            75% { transform: translateY(-8px) rotate(0deg); }
-        }
-        
-        .vanna-container.watching .vanna-svg {
-            animation: vannaWatch 0.5s ease-in-out infinite;
-        }
-        
-        @keyframes armWave {
-            0%, 100% { transform: rotate(-10deg); }
-            50% { transform: rotate(15deg); }
-        }
-        
-        .vanna-container.watching .presenting-arm {
-            animation: armWave 0.3s ease-in-out infinite;
-            transform-origin: 85px 180px;
-        }
-        
-        /* Celebration animation */
-        @keyframes vannaCelebrate {
-            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
-            25% { transform: translateY(-20px) rotate(-5deg) scale(1.05); }
-            50% { transform: translateY(-10px) rotate(0deg) scale(1); }
-            75% { transform: translateY(-20px) rotate(5deg) scale(1.05); }
-        }
-        
-        .vanna-container.celebrating .vanna-svg {
-            animation: vannaCelebrate 0.4s ease-in-out infinite;
-        }
-        
-        @keyframes armsUp {
-            0%, 100% { transform: rotate(-20deg); }
-            50% { transform: rotate(-30deg); }
-        }
-        
-        .vanna-container.celebrating .presenting-arm {
-            animation: armsUp 0.2s ease-in-out infinite;
-            transform-origin: 85px 180px;
-        }
-        
-        .vanna-container.celebrating .other-arm {
-            animation: armsUp 0.2s ease-in-out infinite reverse;
-            transform-origin: 135px 180px;
-        }
-        
-        /* Sparkles */
-        .sparkles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            opacity: 0;
-        }
-        
-        .vanna-container.celebrating .sparkles {
-            opacity: 1;
-        }
-        
-        @keyframes sparkle {
-            0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
-            50% { opacity: 1; transform: scale(1) rotate(180deg); }
-        }
-        
+        .sparkles { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; opacity: 0; }
+        .vanna-container.celebrating .sparkles { opacity: 1; }
+        @keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(0); } 50% { opacity: 1; transform: scale(1); } }
         .sparkle {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            background: #ffdf00;
+            position: absolute; width: 18px; height: 18px; background: #ffdf00;
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
         }
-        
-        .sparkle:nth-child(1) { top: 5%; left: 5%; animation: sparkle 0.5s ease-in-out infinite 0s; }
-        .sparkle:nth-child(2) { top: 0%; left: 85%; animation: sparkle 0.5s ease-in-out infinite 0.1s; }
-        .sparkle:nth-child(3) { top: 20%; left: 0%; animation: sparkle 0.5s ease-in-out infinite 0.2s; }
-        .sparkle:nth-child(4) { top: 15%; left: 95%; animation: sparkle 0.5s ease-in-out infinite 0.15s; }
-        .sparkle:nth-child(5) { top: 35%; left: 90%; animation: sparkle 0.5s ease-in-out infinite 0.25s; }
-        .sparkle:nth-child(6) { top: 40%; left: 5%; animation: sparkle 0.5s ease-in-out infinite 0.05s; }
-        .sparkle:nth-child(7) { top: 10%; left: 50%; animation: sparkle 0.5s ease-in-out infinite 0.3s; }
-        .sparkle:nth-child(8) { top: 60%; left: 0%; animation: sparkle 0.5s ease-in-out infinite 0.12s; }
-        
-        /* Dress shimmer effect */
-        @keyframes shimmer {
-            0% { opacity: 0.3; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0.3; }
-        }
-        
-        .dress-sparkle {
-            animation: shimmer 1.5s ease-in-out infinite;
-        }
-        
-        .dress-sparkle:nth-child(odd) {
-            animation-delay: 0.5s;
-        }
-        
-        /* Custom scrollbar */
-        .option-list::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .option-list::-webkit-scrollbar-track {
-            background: #2a1f63;
-        }
-        
-        .option-list::-webkit-scrollbar-thumb {
-            background: #ffdf00;
-            border-radius: 4px;
-        }
+        .sparkle:nth-child(1) { top: 5%; left: 5%; animation: sparkle 0.35s ease-in-out infinite 0s; }
+        .sparkle:nth-child(2) { top: 0%; left: 85%; animation: sparkle 0.35s ease-in-out infinite 0.07s; }
+        .sparkle:nth-child(3) { top: 25%; left: 0%; animation: sparkle 0.35s ease-in-out infinite 0.14s; }
+        .sparkle:nth-child(4) { top: 20%; left: 92%; animation: sparkle 0.35s ease-in-out infinite 0.1s; }
+        .sparkle:nth-child(5) { top: 45%; left: 88%; animation: sparkle 0.35s ease-in-out infinite 0.05s; }
+        .sparkle:nth-child(6) { top: 55%; left: 2%; animation: sparkle 0.35s ease-in-out infinite 0.12s; }
         
         @media (max-width: 750px) {
-            .game-area {
-                flex-direction: column;
-            }
-            
-            .vanna-container {
-                width: 150px;
-                height: 300px;
-            }
-            
-            .wheel-container {
-                width: 300px;
-                height: 300px;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .spinner {
-                width: 55px;
-                height: 55px;
-                font-size: 16px;
-            }
-            
-            .pointer {
-                border-left: 14px solid transparent;
-                border-right: 14px solid transparent;
-                border-top: 28px solid #f93838;
-            }
+            .game-area { flex-direction: column; }
+            .vanna-container { width: 180px; height: 280px; }
+            .wheel-container { width: 300px; height: 300px; }
+            h1 { font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -472,176 +222,11 @@
         
         <div class="game-area">
             <div class="vanna-container idle" id="vanna-container">
-                <!-- Full-body 80s Glamour Vanna character -->
-                <svg class="vanna-svg" viewBox="0 0 220 450" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <!-- Gradient for sparkly dress -->
-                        <linearGradient id="dressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#C41E3A"/>
-                            <stop offset="25%" style="stop-color:#FF1744"/>
-                            <stop offset="50%" style="stop-color:#C41E3A"/>
-                            <stop offset="75%" style="stop-color:#FF1744"/>
-                            <stop offset="100%" style="stop-color:#C41E3A"/>
-                        </linearGradient>
-                        <linearGradient id="dressShine" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" style="stop-color:rgba(255,255,255,0)"/>
-                            <stop offset="50%" style="stop-color:rgba(255,255,255,0.3)"/>
-                            <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
-                        </linearGradient>
-                    </defs>
-                    
-                    <!-- Back hair volume (80s feathered style) -->
-                    <polygon points="55,60 165,60 180,100 175,140 170,170 50,170 45,140 40,100" fill="#C9A86C"/>
-                    <polygon points="40,100 55,60 50,90" fill="#B8956A"/>
-                    <polygon points="180,100 165,60 170,90" fill="#B8956A"/>
-                    
-                    <!-- Presenting arm (right, towards wheel) -->
-                    <g class="presenting-arm" style="transform-origin: 85px 180px;">
-                        <!-- Upper arm -->
-                        <polygon points="165,185 200,140 215,150 175,195" fill="#FFD5B8"/>
-                        <!-- Forearm -->
-                        <polygon points="200,140 220,100 235,108 215,150" fill="#FFD5B8"/>
-                        <!-- Hand presenting gesture -->
-                        <polygon points="220,100 225,85 235,82 240,90 235,108" fill="#FFD5B8"/>
-                        <polygon points="225,85 228,75 235,73 238,80 235,82" fill="#FFD5B8"/>
-                        <polygon points="235,82 240,72 247,72 248,80 240,90" fill="#FFD5B8"/>
-                        <polygon points="240,90 250,82 255,85 252,95 248,95" fill="#FFD5B8"/>
-                        <!-- Bracelet -->
-                        <ellipse cx="218" cy="105" rx="8" ry="4" fill="#FFD700" transform="rotate(-50, 218, 105)"/>
-                    </g>
-                    
-                    <!-- Other arm -->
-                    <g class="other-arm" style="transform-origin: 135px 180px;">
-                        <!-- Upper arm -->
-                        <polygon points="55,185 20,150 5,165 45,200" fill="#FFD5B8"/>
-                        <!-- Forearm bent at hip -->
-                        <polygon points="20,150 15,180 5,178 5,165" fill="#FFD5B8"/>
-                        <!-- Hand on hip -->
-                        <polygon points="15,180 10,195 20,200 25,190" fill="#FFD5B8"/>
-                        <!-- Bracelet -->
-                        <ellipse cx="17" cy="175" rx="6" ry="3" fill="#FFD700" transform="rotate(20, 17, 175)"/>
-                    </g>
-                    
-                    <!-- Neck -->
-                    <polygon points="90,155 130,155 135,185 85,185" fill="#FFD5B8"/>
-                    <polygon points="90,155 110,160 85,185" fill="#F0C5A8"/>
-                    
-                    <!-- Sparkly 80s Dress - fitted sequined gown -->
-                    <polygon points="60,185 160,185 175,280 180,380 185,450 35,450 40,380 45,280" fill="url(#dressGradient)"/>
-                    <!-- Dress shine overlay -->
-                    <polygon points="60,185 160,185 175,280 180,380 185,450 35,450 40,380 45,280" fill="url(#dressShine)"/>
-                    
-                    <!-- Dress geometric details (80s style) -->
-                    <polygon points="85,185 135,185 140,220 80,220" fill="#D41E3A"/>
-                    <polygon points="80,220 140,220 145,260 75,260" fill="#B8162F"/>
-                    
-                    <!-- Sequin sparkles on dress -->
-                    <circle class="dress-sparkle" cx="90" cy="200" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="130" cy="195" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="110" cy="210" r="2.5" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="85" cy="230" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="135" cy="235" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="100" cy="250" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="120" cy="245" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="95" cy="280" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="125" cy="275" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="110" cy="300" r="2.5" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="80" cy="320" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="140" cy="315" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="100" cy="350" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="120" cy="360" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="90" cy="390" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="130" cy="385" r="2" fill="#FFD700"/>
-                    <circle class="dress-sparkle" cx="110" cy="420" r="2.5" fill="#FFD700"/>
-                    
-                    <!-- Legs hint at bottom -->
-                    <polygon points="85,430 95,450 75,450" fill="#FFD5B8"/>
-                    <polygon points="135,430 145,450 125,450" fill="#FFD5B8"/>
-                    
-                    <!-- High heels -->
-                    <polygon points="70,448 100,448 100,455 65,455 65,452" fill="#C41E3A"/>
-                    <polygon points="120,448 150,448 155,455 120,455" fill="#C41E3A"/>
-                    
-                    <!-- Face -->
-                    <polygon points="70,75 150,75 160,120 155,155 65,155 60,120" fill="#FFD5B8"/>
-                    <!-- Face shading -->
-                    <polygon points="70,75 90,80 80,120 70,155 65,155 60,120" fill="#F0C5A8"/>
-                    <polygon points="150,75 130,80 140,120 150,155 155,155 160,120" fill="#F0C5A8"/>
-                    
-                    <!-- 80s feathered bangs -->
-                    <polygon points="55,60 165,60 160,80 150,70 130,78 110,68 90,78 70,70 60,80" fill="#D4AF6A"/>
-                    <!-- Side feathered hair -->
-                    <polygon points="55,60 45,100 40,130 50,170 60,140 70,75" fill="#C9A86C"/>
-                    <polygon points="165,60 175,100 180,130 170,170 160,140 150,75" fill="#C9A86C"/>
-                    <!-- Hair highlights -->
-                    <polygon points="65,70 80,90 70,100 55,80" fill="#E0C080"/>
-                    <polygon points="155,70 140,90 150,100 165,80" fill="#E0C080"/>
-                    <polygon points="100,65 115,75 110,65" fill="#E0C080"/>
-                    
-                    <!-- Eyebrows (glamorous arch) -->
-                    <path d="M78,95 Q90,88 102,93" stroke="#8B7355" stroke-width="2.5" fill="none"/>
-                    <path d="M118,93 Q130,88 142,95" stroke="#8B7355" stroke-width="2.5" fill="none"/>
-                    
-                    <!-- Eyes -->
-                    <g class="vanna-eyes">
-                        <!-- Left eye -->
-                        <ellipse cx="90" cy="108" rx="12" ry="9" fill="white"/>
-                        <circle cx="90" cy="109" r="6" fill="#5D4E37"/>
-                        <circle cx="90" cy="109" r="3" fill="#2D2417"/>
-                        <circle cx="92" cy="106" r="2" fill="white"/>
-                        <!-- Right eye -->
-                        <ellipse cx="130" cy="108" rx="12" ry="9" fill="white"/>
-                        <circle cx="130" cy="109" r="6" fill="#5D4E37"/>
-                        <circle cx="130" cy="109" r="3" fill="#2D2417"/>
-                        <circle cx="132" cy="106" r="2" fill="white"/>
-                    </g>
-                    
-                    <!-- Eyelashes (glamorous) -->
-                    <path d="M78,103 L74,97" stroke="#2D2417" stroke-width="2"/>
-                    <path d="M82,100 L79,93" stroke="#2D2417" stroke-width="2"/>
-                    <path d="M87,99 L86,92" stroke="#2D2417" stroke-width="1.5"/>
-                    <path d="M142,103 L146,97" stroke="#2D2417" stroke-width="2"/>
-                    <path d="M138,100 L141,93" stroke="#2D2417" stroke-width="2"/>
-                    <path d="M133,99 L134,92" stroke="#2D2417" stroke-width="1.5"/>
-                    
-                    <!-- Nose -->
-                    <polygon points="110,108 105,130 110,133 115,130" fill="#F0C5A8"/>
-                    
-                    <!-- Mouth -->
-                    <g class="vanna-mouth" id="vanna-mouth">
-                        <!-- Warm smile with teeth -->
-                        <path d="M92,142 Q110,155 128,142" stroke="#C44569" stroke-width="2" fill="#C44569"/>
-                        <path d="M95,143 Q110,150 125,143" fill="white"/>
-                    </g>
-                    
-                    <!-- Blush -->
-                    <ellipse cx="75" cy="125" rx="10" ry="6" fill="#FFB3BA" opacity="0.4"/>
-                    <ellipse cx="145" cy="125" rx="10" ry="6" fill="#FFB3BA" opacity="0.4"/>
-                    
-                    <!-- Earrings (dangly 80s style) -->
-                    <circle cx="58" cy="115" r="4" fill="#FFD700"/>
-                    <ellipse cx="58" cy="130" rx="5" ry="8" fill="#FFD700"/>
-                    <ellipse cx="58" cy="130" rx="3" ry="5" fill="#FFF"/>
-                    <circle cx="162" cy="115" r="4" fill="#FFD700"/>
-                    <ellipse cx="162" cy="130" rx="5" ry="8" fill="#FFD700"/>
-                    <ellipse cx="162" cy="130" rx="3" ry="5" fill="#FFF"/>
-                    
-                    <!-- Necklace -->
-                    <path d="M85,180 Q110,195 135,180" stroke="#FFD700" stroke-width="3" fill="none"/>
-                    <circle cx="110" cy="193" r="6" fill="#FFD700"/>
-                    <circle cx="110" cy="193" r="3" fill="#FF1744"/>
-                </svg>
+                <img src="VANNA BITE BITE BITE.jpg" alt="Vanna" class="vanna-img">
                 
-                <!-- Celebration sparkles -->
                 <div class="sparkles">
-                    <div class="sparkle"></div>
-                    <div class="sparkle"></div>
-                    <div class="sparkle"></div>
-                    <div class="sparkle"></div>
-                    <div class="sparkle"></div>
-                    <div class="sparkle"></div>
-                    <div class="sparkle"></div>
-                    <div class="sparkle"></div>
+                    <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
+                    <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
                 </div>
             </div>
             
@@ -661,7 +246,6 @@
                 <input type="text" id="new-option" placeholder="Add a new dinner option...">
                 <button id="add-btn">Add</button>
             </div>
-            
             <div class="option-list">
                 <h3>DINNER OPTIONS</h3>
                 <ul class="options" id="options-list"></ul>
@@ -671,80 +255,40 @@
     </div>
     
     <script>
-        // Default dinner options
-        let dinnerOptions = [
-            "Pizza",
-            "Tacos",
-            "Pasta",
-            "Burgers",
-            "Chinese",
-            "Sushi",
-            "BBQ",
-            "Salad",
-            "Curry"
-        ];
+        let dinnerOptions = ["Pizza", "Tacos", "Pasta", "Burgers", "Chinese", "Sushi", "BBQ", "Salad", "Curry"];
         
-        // Load options from localStorage if available
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedOptions = localStorage.getItem('vannaBiteOptions');
-            if (savedOptions) {
-                dinnerOptions = JSON.parse(savedOptions);
+        // UPDATED COLOR LOGIC: "Golden Angle"
+        // This mathematically ensures that no matter how many slices you add,
+        // no two adjacent slices will ever be the same color.
+        function generateWheelColors(count) {
+            if (count === 0) return [];
+            
+            const colors = [];
+            const goldenAngle = 137.508; // Nature's way of spacing things out
+            
+            for (let i = 0; i < count; i++) {
+                // Calculate Hue based on Golden Angle
+                // This ensures we jump around the color wheel far enough every time
+                const hue = (i * goldenAngle) % 360;
+                
+                // Keep Saturation High (70-85%) and Lightness Balanced (50-60%)
+                // so the colors are always vibrant and visible
+                const saturation = 75; 
+                const lightness = 55;
+                
+                colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
             }
             
+            return colors;
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('vannaBiteOptions');
+            if (saved) dinnerOptions = JSON.parse(saved);
             createWheel();
             updateOptionsList();
         });
         
-        // MAXIMALLY DISTINCT hand-picked colors - no two look alike!
-        const distinctColors = [
-            '#FF0000', // Red
-            '#00AA00', // Green
-            '#0066FF', // Blue
-            '#FFDD00', // Yellow
-            '#FF00FF', // Magenta
-            '#00DDDD', // Cyan
-            '#FF8800', // Orange
-            '#8833FF', // Purple
-            '#00FF88', // Spring green
-            '#FF0088', // Hot pink
-            '#88FF00', // Lime
-            '#0088FF', // Sky blue
-            '#FF4444', // Coral red
-            '#44AA44', // Forest green
-            '#4444FF', // Royal blue
-            '#FFAA00', // Amber
-            '#AA00AA', // Deep magenta
-            '#00AAAA', // Teal
-            '#FF6633', // Burnt orange
-            '#6633FF', // Violet
-            '#33FF66', // Bright mint
-            '#FF3399', // Deep pink
-            '#99FF33', // Yellow-green
-            '#3399FF', // Dodger blue
-            '#CC0000', // Dark red
-            '#009900', // Dark green
-            '#000099', // Navy
-            '#CCAA00', // Gold
-            '#990099', // Dark purple
-            '#009999', // Dark cyan
-            '#CC5500', // Rust
-            '#5500CC', // Indigo
-            '#00CC55', // Emerald
-            '#CC0055', // Ruby
-            '#55CC00', // Chartreuse
-            '#0055CC', // Cobalt
-        ];
-        
-        // Get distinct colors - cycles through if more than available
-        function getDistinctColors(count) {
-            const colors = [];
-            for (let i = 0; i < count; i++) {
-                colors.push(distinctColors[i % distinctColors.length]);
-            }
-            return colors;
-        }
-        
-        // Elements
         const wheel = document.getElementById('wheel');
         const spinner = document.getElementById('spinner');
         const newOptionInput = document.getElementById('new-option');
@@ -752,194 +296,134 @@
         const optionsList = document.getElementById('options-list');
         const resultDiv = document.getElementById('result');
         const flashingLights = document.getElementById('flashing-lights');
-        const spinCount = document.getElementById('spin-count');
-        const optionCount = document.getElementById('option-count');
+        const spinCountEl = document.getElementById('spin-count');
+        const optionCountEl = document.getElementById('option-count');
         const vannaContainer = document.getElementById('vanna-container');
-        const vannaMouth = document.getElementById('vanna-mouth');
         
-        // Wheel spin tracking
         let isSpinning = false;
         let spinCounter = 1;
         let currentRotation = 0;
-        let sliceColors = [];
+        let wheelColors = [];
         
-        // Vanna expressions
-        function setVannaExpression(expression) {
-            vannaContainer.className = 'vanna-container ' + expression;
-            
-            // Change mouth based on expression
-            if (expression === 'idle') {
-                vannaMouth.innerHTML = `
-                    <path d="M92,142 Q110,155 128,142" stroke="#C44569" stroke-width="2" fill="#C44569"/>
-                    <path d="M95,143 Q110,150 125,143" fill="white"/>
-                `;
-            } else if (expression === 'watching') {
-                vannaMouth.innerHTML = `
-                    <ellipse cx="110" cy="145" rx="10" ry="12" fill="#C44569"/>
-                    <ellipse cx="110" cy="142" rx="7" ry="5" fill="#8B2942"/>
-                `;
-            } else if (expression === 'celebrating') {
-                vannaMouth.innerHTML = `
-                    <ellipse cx="110" cy="148" rx="18" ry="14" fill="#C44569"/>
-                    <ellipse cx="110" cy="145" rx="14" ry="8" fill="#8B2942"/>
-                    <path d="M96,143 Q110,138 124,143" stroke="white" stroke-width="4" fill="none"/>
-                `;
-            }
-        }
+        function setVanna(state) { vannaContainer.className = 'vanna-container ' + state; }
         
-        // Create the wheel with truly distinct colors
         function createWheel() {
             wheel.innerHTML = '';
+            const n = dinnerOptions.length;
             
-            const numOptions = dinnerOptions.length;
-            if (numOptions === 0) {
+            if (n === 0) {
                 wheel.style.background = '#2a1f63';
+                wheelColors = [];
                 return;
             }
             
-            // Get distinct colors for each slice
-            sliceColors = getDistinctColors(numOptions);
+            // Generate distinct colors
+            wheelColors = generateWheelColors(n);
             
-            const sliceAngle = 360 / numOptions;
-            
-            // Build conic gradient
-            let gradientStops = [];
-            sliceColors.forEach((color, index) => {
-                const startPercent = (index / numOptions) * 100;
-                const endPercent = ((index + 1) / numOptions) * 100;
-                gradientStops.push(`${color} ${startPercent}% ${endPercent}%`);
+            // Build conic gradient for clean slices
+            const stops = wheelColors.map((color, i) => {
+                const start = (i / n) * 100;
+                const end = ((i + 1) / n) * 100;
+                return `${color} ${start}% ${end}%`;
             });
             
-            wheel.style.background = `conic-gradient(from -90deg, ${gradientStops.join(', ')})`;
+            wheel.style.background = `conic-gradient(from -90deg, ${stops.join(', ')})`;
             
-            // Add slice dividers
-            for (let i = 0; i < numOptions; i++) {
-                const divider = document.createElement('div');
-                divider.style.position = 'absolute';
-                divider.style.width = '2px';
-                divider.style.height = '50%';
-                divider.style.background = 'rgba(255,255,255,0.7)';
-                divider.style.left = '50%';
-                divider.style.top = '0';
-                divider.style.transformOrigin = 'bottom center';
-                divider.style.transform = `translateX(-50%) rotate(${i * sliceAngle}deg)`;
-                wheel.appendChild(divider);
+            // Add divider lines
+            const sliceAngle = 360 / n;
+            for (let i = 0; i < n; i++) {
+                const div = document.createElement('div');
+                div.style.cssText = `
+                    position: absolute; width: 2px; height: 50%;
+                    background: rgba(255,255,255,0.85);
+                    left: 50%; top: 0;
+                    transform-origin: bottom center;
+                    transform: translateX(-50%) rotate(${i * sliceAngle}deg);
+                `;
+                wheel.appendChild(div);
             }
         }
         
-        // Update the options list
         function updateOptionsList() {
             optionsList.innerHTML = '';
             
-            const colors = getDistinctColors(dinnerOptions.length);
-            
-            dinnerOptions.forEach((option, index) => {
+            dinnerOptions.forEach((opt, i) => {
                 const li = document.createElement('li');
                 li.className = 'option-item';
                 
                 const span = document.createElement('span');
+                const dot = document.createElement('div');
+                dot.className = 'color-dot';
+                dot.style.backgroundColor = wheelColors[i] || '#888';
+                span.appendChild(dot);
+                span.appendChild(document.createTextNode(opt));
                 
-                const colorDot = document.createElement('div');
-                colorDot.className = 'color-dot';
-                colorDot.style.backgroundColor = colors[index];
-                
-                const text = document.createTextNode(option);
-                
-                span.appendChild(colorDot);
-                span.appendChild(text);
-                
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-btn';
-                deleteBtn.textContent = 'X';
-                deleteBtn.onclick = function() {
-                    dinnerOptions.splice(index, 1);
-                    saveOptions();
+                const del = document.createElement('button');
+                del.className = 'delete-btn';
+                del.textContent = 'X';
+                del.onclick = () => {
+                    dinnerOptions.splice(i, 1);
+                    localStorage.setItem('vannaBiteOptions', JSON.stringify(dinnerOptions));
                     createWheel();
                     updateOptionsList();
                 };
                 
                 li.appendChild(span);
-                li.appendChild(deleteBtn);
+                li.appendChild(del);
                 optionsList.appendChild(li);
             });
             
-            optionCount.textContent = `${dinnerOptions.length} option${dinnerOptions.length !== 1 ? 's' : ''} loaded`;
+            optionCountEl.textContent = `${dinnerOptions.length} option${dinnerOptions.length !== 1 ? 's' : ''}`;
         }
         
-        // Save options to localStorage
-        function saveOptions() {
-            localStorage.setItem('vannaBiteOptions', JSON.stringify(dinnerOptions));
-        }
-        
-        // Spin the wheel
         function spinWheel() {
-            if (isSpinning) return;
-            if (dinnerOptions.length === 0) {
-                alert("Please add some dinner options first!");
+            if (isSpinning || dinnerOptions.length === 0) {
+                if (dinnerOptions.length === 0) alert("Add some options first!");
                 return;
             }
             
             isSpinning = true;
             resultDiv.style.display = 'none';
+            setVanna('watching');
+            spinCountEl.textContent = `SPIN #${spinCounter++}`;
             
-            // Vanna gets excited
-            setVannaExpression('watching');
+            const n = dinnerOptions.length;
+            const sliceAngle = 360 / n;
+            const winner = Math.floor(Math.random() * n);
+            const target = winner * sliceAngle + sliceAngle / 2;
+            const spins = 10 + Math.floor(Math.random() * 5);
+            const total = currentRotation + spins * 360 + (360 - target);
             
-            spinCount.textContent = `SPIN #${spinCounter}`;
-            spinCounter++;
-            
-            const numOptions = dinnerOptions.length;
-            const sliceAngle = 360 / numOptions;
-            
-            const winningIndex = Math.floor(Math.random() * numOptions);
-            const targetAngle = winningIndex * sliceAngle + sliceAngle / 2;
-            const fullSpins = 10 + Math.floor(Math.random() * 5);
-            const totalDegrees = currentRotation + (fullSpins * 360) + (360 - targetAngle);
-            
-            currentRotation = totalDegrees;
-            wheel.style.transform = `rotate(${totalDegrees}deg)`;
+            currentRotation = total;
+            wheel.style.transform = `rotate(${total}deg)`;
             
             setTimeout(() => {
-                // Vanna celebrates!
-                setVannaExpression('celebrating');
+                setVanna('celebrating');
+                flashingLights.style.animation = 'flash 1.5s';
+                setTimeout(() => flashingLights.style.animation = '', 1500);
                 
-                flashingLights.style.animation = 'flashingLights 1.5s';
-                setTimeout(() => {
-                    flashingLights.style.animation = '';
-                }, 1500);
-                
-                const result = dinnerOptions[winningIndex];
-                resultDiv.textContent = `TONIGHT'S DINNER: ${result.toUpperCase()}`;
+                resultDiv.textContent = `TONIGHT'S DINNER: ${dinnerOptions[winner].toUpperCase()}`;
                 resultDiv.style.display = 'block';
                 
-                setTimeout(() => {
-                    setVannaExpression('idle');
-                }, 4000);
-                
+                setTimeout(() => setVanna('idle'), 4000);
                 isSpinning = false;
             }, 8000);
         }
         
-        // Event listeners
-        addBtn.addEventListener('click', function() {
-            const newOption = newOptionInput.value.trim();
-            if (newOption && !dinnerOptions.includes(newOption)) {
-                dinnerOptions.push(newOption);
-                saveOptions();
+        addBtn.addEventListener('click', () => {
+            const val = newOptionInput.value.trim();
+            if (val && !dinnerOptions.includes(val)) {
+                dinnerOptions.push(val);
+                localStorage.setItem('vannaBiteOptions', JSON.stringify(dinnerOptions));
                 newOptionInput.value = '';
                 createWheel();
                 updateOptionsList();
-            } else if (dinnerOptions.includes(newOption)) {
-                alert("That option already exists!");
+            } else if (dinnerOptions.includes(val)) {
+                alert("Already exists!");
             }
         });
         
-        newOptionInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addBtn.click();
-            }
-        });
-        
+        newOptionInput.addEventListener('keypress', e => { if (e.key === 'Enter') addBtn.click(); });
         spinner.addEventListener('click', spinWheel);
     </script>
 </body>
