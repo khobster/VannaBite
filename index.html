@@ -17,7 +17,7 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #1a1442;
+            background: radial-gradient(circle at center, #2a1f63 0%, #1a1442 100%);
             padding: 20px;
             color: white;
         }
@@ -33,29 +33,56 @@
         }
         
         .container { display: flex; flex-direction: column; align-items: center; max-width: 1000px; width: 100%; }
-        .game-area { display: flex; align-items: center; justify-content: center; gap: 30px; width: 100%; }
+        .game-area { display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%; }
         
-        /* VANNA IMAGE CONTAINER */
+        /* --- VANNA CONTAINER --- */
         .vanna-container { 
-            width: 250px; 
-            height: 380px; 
+            width: 300px; 
+            height: 420px; 
             position: relative; 
             flex-shrink: 0;
             display: flex;
-            align-items: center;
+            align-items: flex-end; /* Align to bottom so she doesn't float when swapping poses */
             justify-content: center;
         }
 
         .vanna-img {
-            width: 100%;
-            height: auto;
-            max-height: 100%;
+            width: auto;
+            height: 100%;
+            max-width: 100%;
             object-fit: contain;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
-            /* Base transition for smooth movements */
-            transition: transform 0.2s;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+            /* Snap change - no fade between images for that cartoon feel */
+            transition: transform 0.1s; 
         }
         
+        /* --- ANIMATIONS --- */
+        
+        /* IDLE: Gentle breathing */
+        @keyframes animIdle { 
+            0%, 100% { transform: scale(1); } 
+            50% { transform: scale(1.02, 0.98); } /* Squash and stretch slightly */
+        }
+        
+        /* WATCHING: Shaking/Vibrating (Nervous) */
+        @keyframes animWatching { 
+            0% { transform: translateX(0); } 
+            25% { transform: translateX(-3px) rotate(-1deg); }
+            75% { transform: translateX(3px) rotate(1deg); }
+            100% { transform: translateX(0); }
+        }
+
+        /* WIN: Bouncing Happy Dance */
+        @keyframes animWin { 
+            0%, 100% { transform: translateY(0); } 
+            50% { transform: translateY(-20px); } 
+        }
+        
+        .vanna-container.idle .vanna-img { animation: animIdle 2s ease-in-out infinite; }
+        .vanna-container.watching .vanna-img { animation: animWatching 0.1s linear infinite; }
+        .vanna-container.win .vanna-img { animation: animWin 0.4s ease-in-out infinite; }
+        
+        /* --- WHEEL --- */
         .wheel-container { position: relative; width: 400px; height: 400px; margin: 20px 0; }
         
         .wheel {
@@ -63,9 +90,10 @@
             border-radius: 50%;
             position: relative;
             overflow: hidden;
-            transition: transform 8s cubic-bezier(0.17, 0.97, 0.12, 1);
+            transition: transform 5s cubic-bezier(0.17, 0.97, 0.12, 1); /* Faster spin (5s) */
             box-shadow: 0 0 20px rgba(0, 255, 0, 0.4), 0 0 40px rgba(0, 255, 0, 0.2);
             border: 15px solid #0a8f45;
+            background-color: #2a1f63; 
         }
         
         .spinner {
@@ -80,16 +108,16 @@
             font-weight: bold; color: #000; font-size: 20px;
             border: 5px solid white;
             font-family: 'Bebas Neue', sans-serif;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s;
         }
-        .spinner:hover { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 20px rgba(255, 223, 0, 1); }
+        .spinner:hover { transform: translate(-50%, -50%) scale(1.1); }
         
         .pointer {
-            position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0;
-            border-left: 18px solid transparent; border-right: 18px solid transparent;
-            border-top: 35px solid #f93838;
-            filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.5));
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 40px; height: 50px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 50'%3E%3Cpath d='M20 50L0 0h40L20 50z' fill='%23f93838'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
             z-index: 15;
         }
         
@@ -102,16 +130,13 @@
             margin-right: 10px; font-size: 16px;
             background-color: #2a1f63; color: white;
         }
-        input::placeholder { color: #aaa; }
         
         button {
             padding: 10px 15px; background-color: #ffdf00; color: #000;
             border: none; border-radius: 4px; cursor: pointer;
             font-size: 16px; font-weight: bold;
-            box-shadow: 0 0 10px rgba(255, 223, 0, 0.4);
-            transition: all 0.2s;
         }
-        button:hover { background-color: #ffeb3b; transform: scale(1.05); }
+        button:hover { background-color: #ffeb3b; }
         
         .option-list {
             margin-top: 20px; width: 100%; max-height: 180px;
@@ -124,16 +149,13 @@
             font-family: 'Bebas Neue', sans-serif;
             color: #ffdf00; font-size: 1.5rem;
         }
-        .options { list-style: none; padding: 0; margin: 0; }
         .option-item {
             display: flex; justify-content: space-between; align-items: center;
             padding: 8px 15px; border-bottom: 1px solid #483d8b;
         }
-        .option-item:last-child { border-bottom: none; }
         .option-item span { display: flex; align-items: center; gap: 10px; }
-        .color-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); }
-        .delete-btn { background-color: #ff5252; color: white; padding: 3px 10px; font-size: 14px; }
-        .delete-btn:hover { background-color: #ff3333; }
+        .color-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid white; }
+        .delete-btn { background-color: #ff5252; color: white; padding: 3px 10px; }
         
         .result {
             margin-top: 20px; padding: 20px;
@@ -143,9 +165,7 @@
             display: none;
             box-shadow: 0 0 20px rgba(255, 223, 0, 0.6);
             font-family: 'Bebas Neue', sans-serif;
-            animation: popIn 0.5s ease-out;
         }
-        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         
         .flashing-lights {
             position: absolute; width: 100%; height: 100%; top: 0; left: 0;
@@ -159,58 +179,9 @@
             100% { opacity: 0; }
         }
         
-        .spin-count {
-            position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%);
-            font-family: 'Bebas Neue', sans-serif; color: #ffdf00; font-size: 22px;
-        }
-        .option-count { text-align: center; color: #aaa; font-size: 14px; margin-top: 5px; }
-        
-        /* NEW IMAGE ANIMATIONS (South Park Cutout Style) */
-        
-        /* Idle: Gentle bobbing */
-        @keyframes imgIdle { 
-            0%, 100% { transform: translateY(0) rotate(0deg); } 
-            50% { transform: translateY(-5px) rotate(1deg); } 
-        }
-        
-        /* Watching: Fast nervous vibration/bounce */
-        @keyframes imgWatching { 
-            0% { transform: translate(0, 0) rotate(0deg); } 
-            25% { transform: translate(-2px, 3px) rotate(-2deg); }
-            50% { transform: translate(2px, -3px) rotate(2deg); }
-            75% { transform: translate(-2px, 3px) rotate(-1deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
-        }
-
-        /* Celebrating: Happy big bouncing dance */
-        @keyframes imgCelebrate { 
-            0%, 100% { transform: translateY(0) scale(1) rotate(0deg); } 
-            25% { transform: translateY(-15px) scale(1.05) rotate(-5deg); }
-            50% { transform: translateY(0) scale(1) rotate(0deg); }
-            75% { transform: translateY(-15px) scale(1.05) rotate(5deg); }
-        }
-        
-        .vanna-container.idle .vanna-img { animation: imgIdle 3s ease-in-out infinite; }
-        .vanna-container.watching .vanna-img { animation: imgWatching 0.2s linear infinite; }
-        .vanna-container.celebrating .vanna-img { animation: imgCelebrate 0.5s ease-in-out infinite; }
-        
-        .sparkles { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; opacity: 0; }
-        .vanna-container.celebrating .sparkles { opacity: 1; }
-        @keyframes sparkle { 0%, 100% { opacity: 0; transform: scale(0); } 50% { opacity: 1; transform: scale(1); } }
-        .sparkle {
-            position: absolute; width: 18px; height: 18px; background: #ffdf00;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-        }
-        .sparkle:nth-child(1) { top: 5%; left: 5%; animation: sparkle 0.35s ease-in-out infinite 0s; }
-        .sparkle:nth-child(2) { top: 0%; left: 85%; animation: sparkle 0.35s ease-in-out infinite 0.07s; }
-        .sparkle:nth-child(3) { top: 25%; left: 0%; animation: sparkle 0.35s ease-in-out infinite 0.14s; }
-        .sparkle:nth-child(4) { top: 20%; left: 92%; animation: sparkle 0.35s ease-in-out infinite 0.1s; }
-        .sparkle:nth-child(5) { top: 45%; left: 88%; animation: sparkle 0.35s ease-in-out infinite 0.05s; }
-        .sparkle:nth-child(6) { top: 55%; left: 2%; animation: sparkle 0.35s ease-in-out infinite 0.12s; }
-        
         @media (max-width: 750px) {
             .game-area { flex-direction: column; }
-            .vanna-container { width: 180px; height: 280px; }
+            .vanna-container { width: 220px; height: 320px; }
             .wheel-container { width: 300px; height: 300px; }
             h1 { font-size: 2.5rem; }
         }
@@ -222,12 +193,10 @@
         
         <div class="game-area">
             <div class="vanna-container idle" id="vanna-container">
-                <img src="VANNA BITE BITE BITE.png" alt="Vanna" class="vanna-img">
+                <img id="vanna-img" src="vanna_idle.png" class="vanna-img" alt="Vanna">
                 
-                <div class="sparkles">
-                    <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
-                    <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
-                </div>
+                <div class="sparkles" id="sparkles" style="opacity:0; position:absolute; width:100%; height:100%;">
+                    </div>
             </div>
             
             <div class="wheel-container">
@@ -235,7 +204,6 @@
                 <div class="spinner" id="spinner">SPIN</div>
                 <div class="pointer"></div>
                 <div class="flashing-lights" id="flashing-lights"></div>
-                <div class="spin-count" id="spin-count">SPIN #1</div>
             </div>
         </div>
         
@@ -243,188 +211,172 @@
         
         <div class="controls">
             <div class="input-group">
-                <input type="text" id="new-option" placeholder="Add a new dinner option...">
+                <input type="text" id="new-option" placeholder="Add option...">
                 <button id="add-btn">Add</button>
             </div>
             <div class="option-list">
                 <h3>DINNER OPTIONS</h3>
-                <ul class="options" id="options-list"></ul>
+                <div id="option-count" style="text-align: center; color:#aaa; margin-bottom:5px;"></div>
+                <div style="max-height: 180px; overflow-y: auto;">
+                    <div id="options-list"></div>
+                </div>
             </div>
-            <div class="option-count" id="option-count"></div>
         </div>
     </div>
     
     <script>
-        let dinnerOptions = ["Pizza", "Tacos", "Pasta", "Burgers", "Chinese", "Sushi", "BBQ", "Salad", "Curry"];
-        
-        // UPDATED COLOR LOGIC: "Golden Angle"
-        // This mathematically ensures that no matter how many slices you add,
-        // no two adjacent slices will ever be the same color.
+        let dinnerOptions = ["Pizza", "Tacos", "Pasta", "Burgers", "Chinese", "Sushi", "BBQ", "Salad"];
+        let wheelColors = [];
+
+        // --- FIXED COLOR LOGIC: EQUIDISTANT HUES ---
+        // This ensures every slice gets its own unique spot on the color wheel.
         function generateWheelColors(count) {
             if (count === 0) return [];
-            
             const colors = [];
-            const goldenAngle = 137.508; // Nature's way of spacing things out
+            const step = 360 / count; // Divide the color wheel evenly by the number of items
             
             for (let i = 0; i < count; i++) {
-                // Calculate Hue based on Golden Angle
-                // This ensures we jump around the color wheel far enough every time
-                const hue = (i * goldenAngle) % 360;
-                
-                // Keep Saturation High (70-85%) and Lightness Balanced (50-60%)
-                // so the colors are always vibrant and visible
-                const saturation = 75; 
-                const lightness = 55;
-                
-                colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+                const hue = Math.floor(i * step);
+                // High saturation and medium lightness for best visibility
+                colors.push(`hsl(${hue}, 80%, 55%)`);
             }
-            
             return colors;
         }
         
-        document.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('vannaBiteOptions');
-            if (saved) dinnerOptions = JSON.parse(saved);
-            createWheel();
-            updateOptionsList();
-        });
-        
         const wheel = document.getElementById('wheel');
-        const spinner = document.getElementById('spinner');
-        const newOptionInput = document.getElementById('new-option');
-        const addBtn = document.getElementById('add-btn');
-        const optionsList = document.getElementById('options-list');
+        const vannaContainer = document.getElementById('vanna-container');
+        const vannaImg = document.getElementById('vanna-img');
         const resultDiv = document.getElementById('result');
         const flashingLights = document.getElementById('flashing-lights');
-        const spinCountEl = document.getElementById('spin-count');
-        const optionCountEl = document.getElementById('option-count');
-        const vannaContainer = document.getElementById('vanna-container');
         
-        let isSpinning = false;
-        let spinCounter = 1;
-        let currentRotation = 0;
-        let wheelColors = [];
-        
-        function setVanna(state) { vannaContainer.className = 'vanna-container ' + state; }
+        function updateVanna(state) {
+            // Remove all state classes
+            vannaContainer.classList.remove('idle', 'watching', 'win');
+            vannaContainer.classList.add(state);
+            
+            // SWAP THE IMAGE SOURCE
+            if (state === 'idle') vannaImg.src = 'vanna_idle.png';
+            if (state === 'watching') vannaImg.src = 'vanna_watching.png';
+            if (state === 'win') vannaImg.src = 'vanna_win.png';
+        }
         
         function createWheel() {
             wheel.innerHTML = '';
             const n = dinnerOptions.length;
+            if (n === 0) { wheel.style.background = '#2a1f63'; return; }
             
-            if (n === 0) {
-                wheel.style.background = '#2a1f63';
-                wheelColors = [];
-                return;
-            }
-            
-            // Generate distinct colors
             wheelColors = generateWheelColors(n);
             
-            // Build conic gradient for clean slices
             const stops = wheelColors.map((color, i) => {
                 const start = (i / n) * 100;
                 const end = ((i + 1) / n) * 100;
                 return `${color} ${start}% ${end}%`;
             });
             
-            wheel.style.background = `conic-gradient(from -90deg, ${stops.join(', ')})`;
+            wheel.style.background = `conic-gradient(from 0deg, ${stops.join(', ')})`;
             
-            // Add divider lines
+            // Add lines
             const sliceAngle = 360 / n;
             for (let i = 0; i < n; i++) {
-                const div = document.createElement('div');
-                div.style.cssText = `
+                const line = document.createElement('div');
+                line.style.cssText = `
                     position: absolute; width: 2px; height: 50%;
-                    background: rgba(255,255,255,0.85);
-                    left: 50%; top: 0;
+                    background: rgba(0,0,0,0.3); left: 50%; top: 0;
                     transform-origin: bottom center;
                     transform: translateX(-50%) rotate(${i * sliceAngle}deg);
                 `;
-                wheel.appendChild(div);
+                wheel.appendChild(line);
             }
         }
         
-        function updateOptionsList() {
-            optionsList.innerHTML = '';
+        function updateList() {
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            document.getElementById('option-count').innerText = `${dinnerOptions.length} Options`;
             
             dinnerOptions.forEach((opt, i) => {
-                const li = document.createElement('li');
-                li.className = 'option-item';
-                
-                const span = document.createElement('span');
-                const dot = document.createElement('div');
-                dot.className = 'color-dot';
-                dot.style.backgroundColor = wheelColors[i] || '#888';
-                span.appendChild(dot);
-                span.appendChild(document.createTextNode(opt));
-                
-                const del = document.createElement('button');
-                del.className = 'delete-btn';
-                del.textContent = 'X';
-                del.onclick = () => {
-                    dinnerOptions.splice(i, 1);
-                    localStorage.setItem('vannaBiteOptions', JSON.stringify(dinnerOptions));
-                    createWheel();
-                    updateOptionsList();
-                };
-                
-                li.appendChild(span);
-                li.appendChild(del);
-                optionsList.appendChild(li);
+                const div = document.createElement('div');
+                div.className = 'option-item';
+                div.innerHTML = `
+                    <span><div class="color-dot" style="background:${wheelColors[i]}"></div>${opt}</span>
+                    <button class="delete-btn" onclick="removeItem(${i})">X</button>
+                `;
+                list.appendChild(div);
             });
-            
-            optionCountEl.textContent = `${dinnerOptions.length} option${dinnerOptions.length !== 1 ? 's' : ''}`;
         }
         
-        function spinWheel() {
-            if (isSpinning || dinnerOptions.length === 0) {
-                if (dinnerOptions.length === 0) alert("Add some options first!");
-                return;
-            }
-            
+        function removeItem(i) {
+            dinnerOptions.splice(i, 1);
+            save(); refresh();
+        }
+        
+        function refresh() {
+            createWheel();
+            updateList();
+        }
+        
+        function save() {
+            localStorage.setItem('vannaBiteOptions', JSON.stringify(dinnerOptions));
+        }
+
+        let isSpinning = false;
+        let currentRotation = 0;
+
+        function spin() {
+            if (isSpinning || dinnerOptions.length === 0) return;
             isSpinning = true;
             resultDiv.style.display = 'none';
-            setVanna('watching');
-            spinCountEl.textContent = `SPIN #${spinCounter++}`;
+            
+            // 1. CHANGE VANNA TO WATCHING
+            updateVanna('watching');
             
             const n = dinnerOptions.length;
             const sliceAngle = 360 / n;
-            const winner = Math.floor(Math.random() * n);
-            const target = winner * sliceAngle + sliceAngle / 2;
-            const spins = 10 + Math.floor(Math.random() * 5);
-            const total = currentRotation + spins * 360 + (360 - target);
+            const winnerIndex = Math.floor(Math.random() * n);
             
-            currentRotation = total;
-            wheel.style.transform = `rotate(${total}deg)`;
+            // Calculate landing spot (center of the winning slice)
+            // Note: Conic gradient starts at 0 (top), rotation moves clockwise.
+            // We need to account for the pointer being at the top.
+            const targetRotation = 360 - (winnerIndex * sliceAngle + sliceAngle / 2);
+            const extraSpins = 360 * (5 + Math.floor(Math.random() * 5)); // 5-10 spins
+            const totalRotation = currentRotation + extraSpins + (targetRotation - (currentRotation % 360));
+            
+            // Ensure we always spin forward
+            const finalRotation = totalRotation > currentRotation ? totalRotation : totalRotation + 360;
+            currentRotation = finalRotation;
+            
+            wheel.style.transform = `rotate(${finalRotation}deg)`;
             
             setTimeout(() => {
-                setVanna('celebrating');
+                // 2. CHANGE VANNA TO WINNING
+                updateVanna('win');
                 flashingLights.style.animation = 'flash 1.5s';
                 setTimeout(() => flashingLights.style.animation = '', 1500);
                 
-                resultDiv.textContent = `TONIGHT'S DINNER: ${dinnerOptions[winner].toUpperCase()}`;
+                resultDiv.innerText = `DINNER IS: ${dinnerOptions[winnerIndex]}`;
                 resultDiv.style.display = 'block';
                 
-                setTimeout(() => setVanna('idle'), 4000);
-                isSpinning = false;
-            }, 8000);
+                setTimeout(() => {
+                    updateVanna('idle');
+                    isSpinning = false;
+                }, 4000);
+            }, 5000); // 5 seconds matches CSS transition
         }
-        
-        addBtn.addEventListener('click', () => {
-            const val = newOptionInput.value.trim();
+
+        document.getElementById('spinner').addEventListener('click', spin);
+        document.getElementById('add-btn').addEventListener('click', () => {
+            const val = document.getElementById('new-option').value.trim();
             if (val && !dinnerOptions.includes(val)) {
                 dinnerOptions.push(val);
-                localStorage.setItem('vannaBiteOptions', JSON.stringify(dinnerOptions));
-                newOptionInput.value = '';
-                createWheel();
-                updateOptionsList();
-            } else if (dinnerOptions.includes(val)) {
-                alert("Already exists!");
+                document.getElementById('new-option').value = '';
+                save(); refresh();
             }
         });
-        
-        newOptionInput.addEventListener('keypress', e => { if (e.key === 'Enter') addBtn.click(); });
-        spinner.addEventListener('click', spinWheel);
+
+        // Init
+        const saved = localStorage.getItem('vannaBiteOptions');
+        if (saved) dinnerOptions = JSON.parse(saved);
+        refresh();
     </script>
 </body>
 </html>
