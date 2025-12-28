@@ -35,12 +35,12 @@
                 -1px -1px 0px #fff8dc;
         }
         
-        .container { display: flex; flex-direction: column; align-items: center; max-width: 1100px; width: 100%; }
-        .game-area { display: flex; align-items: center; justify-content: center; gap: 30px; width: 100%; }
+        .container { display: flex; flex-direction: column; align-items: center; max-width: 1200px; width: 100%; }
+        .game-area { display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%; }
         
         .vanna-container { 
-            width: 380px; 
-            height: 520px; 
+            width: 420px; 
+            height: 580px; 
             position: relative; 
             flex-shrink: 0;
             display: flex;
@@ -76,8 +76,8 @@
         /* === 1980s WHEEL OF FORTUNE === */
         .wheel-container { 
             position: relative; 
-            width: 480px; 
-            height: 480px; 
+            width: 500px; 
+            height: 500px; 
             margin: 20px 0; 
         }
         
@@ -117,8 +117,8 @@
             top: 50%; 
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 130px; 
-            height: 130px;
+            width: 140px; 
+            height: 140px;
             background: radial-gradient(circle at 40% 35%, #5dbe5d 0%, #3aa63a 40%, #2d8a2d 70%, #1f6b1f 100%);
             border-radius: 50%; 
             z-index: 10;
@@ -127,7 +127,7 @@
             align-items: center; 
             justify-content: center;
             color: #fff; 
-            font-size: 24px;
+            font-size: 26px;
             font-family: 'Staatliches', cursive;
             letter-spacing: 1px;
             text-shadow: 2px 2px 0px rgba(0,0,0,0.7);
@@ -152,25 +152,25 @@
             z-index: 15;
             width: 0;
             height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-top: 55px solid #cc0000;
+            border-left: 22px solid transparent;
+            border-right: 22px solid transparent;
+            border-top: 60px solid #cc0000;
             filter: drop-shadow(2px 3px 3px rgba(0,0,0,0.5));
         }
         
         .pointer::after {
             content: '';
             position: absolute;
-            top: -55px;
-            left: -14px;
+            top: -60px;
+            left: -16px;
             width: 0;
             height: 0;
-            border-left: 14px solid transparent;
-            border-right: 14px solid transparent;
-            border-top: 46px solid #ff3333;
+            border-left: 16px solid transparent;
+            border-right: 16px solid transparent;
+            border-top: 50px solid #ff3333;
         }
         
-        .controls { margin-top: 25px; display: flex; flex-direction: column; width: 100%; max-width: 480px; }
+        .controls { margin-top: 25px; display: flex; flex-direction: column; width: 100%; max-width: 500px; }
         .input-group { display: flex; margin-bottom: 15px; width: 100%; }
         
         input {
@@ -277,11 +277,18 @@
             font-family: 'Staatliches', cursive;
         }
         
-        @media (max-width: 900px) {
+        .char-limit {
+            text-align: center;
+            padding: 4px;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        @media (max-width: 950px) {
             .game-area { flex-direction: column; }
-            .vanna-container { width: 280px; height: 380px; }
-            .wheel-container { width: 360px; height: 360px; }
-            .center-hub { width: 100px; height: 100px; font-size: 18px; }
+            .vanna-container { width: 300px; height: 420px; }
+            .wheel-container { width: 380px; height: 380px; }
+            .center-hub { width: 110px; height: 110px; font-size: 20px; }
             h1 { font-size: 2.8rem; letter-spacing: 2px; }
         }
     </style>
@@ -291,7 +298,7 @@
         <h1>VANNA BITE</h1>
         
         <div class="game-area">
-            <div class="vanna-container idle" id="vanna-container">
+            <div class="vanna-container" id="vanna-container">
                 <img id="vanna-img" src="vanna_bite_idle.png" class="vanna-img" alt="Vanna">
             </div>
             
@@ -307,9 +314,10 @@
         
         <div class="controls">
             <div class="input-group">
-                <input type="text" id="new-option" placeholder="ADD DINNER OPTION...">
+                <input type="text" id="new-option" placeholder="ADD DINNER OPTION..." maxlength="12">
                 <button id="add-btn">ADD</button>
             </div>
+            <div class="char-limit">12 CHARACTER LIMIT</div>
             <div class="option-list">
                 <h3>DINNER OPTIONS</h3>
                 <div id="option-count"></div>
@@ -321,6 +329,7 @@
     </div>
     
     <script>
+        const MAX_CHARS = 12;
         let dinnerOptions = ["PIZZA", "TACOS", "PASTA", "BURGERS", "CHINESE", "SUSHI", "BBQ", "SALAD"];
         let wheelColors = [];
         let blackSliceIndex = 0;
@@ -355,7 +364,9 @@
         
         function updateVanna(state) {
             vannaContainer.classList.remove('idle', 'watching', 'win');
-            vannaContainer.classList.add(state);
+            if (state !== 'idle') {
+                vannaContainer.classList.add(state);
+            }
             
             if (state === 'idle') vannaImg.src = 'vanna_bite_idle.png';
             if (state === 'watching') vannaImg.src = 'vanna_bite_watching.png';
@@ -372,11 +383,12 @@
             
             wheelColors = generateWheelColors(n);
             const sliceAngle = 360 / n;
-            const size = 456;
+            const sliceAngleRad = (sliceAngle * Math.PI) / 180;
+            const size = 476;
             const cx = size / 2;
             const cy = size / 2;
             const radius = size / 2;
-            const innerRadius = 70;
+            const innerRadius = 75;
             
             let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`;
             
@@ -406,53 +418,41 @@
                 svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#a67c00" stroke-width="3"/>`;
             }
             
-            // Draw text - vertical, scaling DOWN as we go toward center
+            // Draw text - sized to FILL the slice width at each position
             for (let i = 0; i < n; i++) {
                 const midAngleDeg = (i + 0.5) * sliceAngle;
                 const midAngle = (midAngleDeg - 90) * Math.PI / 180;
-                const text = dinnerOptions[i].toUpperCase();
+                const text = dinnerOptions[i].toUpperCase().substring(0, MAX_CHARS);
                 const textLength = text.length;
                 
-                // Available space
-                const textStartRadius = radius - 18;
-                const textEndRadius = innerRadius + 10;
-                const availableLength = textStartRadius - textEndRadius;
+                if (textLength === 0) continue;
                 
-                // Calculate spacing to fit all letters
-                const letterSpacing = Math.min(24, availableLength / textLength) * 0.92;
+                // Available radial space
+                const textStartRadius = radius - 15;
+                const textEndRadius = innerRadius + 8;
+                const availableRadial = textStartRadius - textEndRadius;
                 
-                // Base font size at outer edge - scales with number of slices
-                let maxFontSize;
-                if (n <= 6) {
-                    maxFontSize = 28;
-                } else if (n <= 10) {
-                    maxFontSize = 24;
-                } else if (n <= 16) {
-                    maxFontSize = 20;
-                } else {
-                    maxFontSize = 16;
-                }
-                
-                // Minimum font size at inner edge
-                const minFontSize = maxFontSize * 0.5;
+                // Calculate letter spacing to use available space
+                const letterSpacing = availableRadial / textLength;
                 
                 for (let j = 0; j < textLength; j++) {
-                    const letterRadius = textStartRadius - (j * letterSpacing);
+                    // Position along the radius
+                    const letterRadius = textStartRadius - (j * letterSpacing) - (letterSpacing / 2);
                     
-                    // Stop if we'd go past the inner hub
-                    if (letterRadius < textEndRadius) break;
+                    // Calculate slice width at this radius (arc length)
+                    // Arc width = angle (in radians) * radius
+                    // But we want the chord-ish width, so use a factor
+                    const sliceWidthAtRadius = sliceAngleRad * letterRadius * 0.75;
                     
-                    // Calculate font size - linear scale from max at outer to min at inner
-                    const progress = j / Math.max(textLength - 1, 1);
-                    const fontSize = Math.round(maxFontSize - (progress * (maxFontSize - minFontSize)));
+                    // Font size = fill most of the slice width
+                    // Staatliches is tall and narrow, so we can go bigger
+                    const fontSize = Math.min(sliceWidthAtRadius * 1.4, letterSpacing * 1.1);
                     
                     const lx = cx + letterRadius * Math.cos(midAngle);
                     const ly = cy + letterRadius * Math.sin(midAngle);
                     
-                    // Shadow offset scales with font size
-                    const shadowOffset = Math.max(2, fontSize / 12);
-                    
-                    // Heavy black drop shadow
+                    // Shadow
+                    const shadowOffset = Math.max(2, fontSize / 10);
                     svgContent += `<text 
                         x="${lx + shadowOffset}" 
                         y="${ly + shadowOffset}" 
@@ -464,7 +464,7 @@
                         transform="rotate(${midAngleDeg}, ${lx + shadowOffset}, ${ly + shadowOffset})"
                     >${text[j]}</text>`;
                     
-                    // White text on top with black stroke
+                    // Main letter
                     svgContent += `<text 
                         x="${lx}" 
                         y="${ly}" 
@@ -554,7 +554,7 @@
 
         document.getElementById('spinner').addEventListener('click', spin);
         document.getElementById('add-btn').addEventListener('click', () => {
-            const val = document.getElementById('new-option').value.trim();
+            const val = document.getElementById('new-option').value.trim().substring(0, MAX_CHARS);
             if (val && !dinnerOptions.map(o => o.toUpperCase()).includes(val.toUpperCase())) {
                 dinnerOptions.push(val.toUpperCase());
                 document.getElementById('new-option').value = '';
