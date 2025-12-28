@@ -413,7 +413,7 @@
                 svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#a67c00" stroke-width="3"/>`;
             }
             
-            // Draw text - each letter sized to fill slice width at its position
+            // Draw text - BANKRUPT style scaling
             for (let i = 0; i < n; i++) {
                 const midAngleDeg = (i + 0.5) * sliceAngle;
                 const midAngle = (midAngleDeg - 90) * Math.PI / 180;
@@ -422,70 +422,67 @@
                 
                 if (textLength === 0) continue;
                 
-                // Calculate positions for each letter first
-                // We need to know where each letter will go to size them properly
-                const outerTextRadius = radius - 12;
-                const innerTextRadius = innerRadius + 8;
+                const outerTextRadius = radius - 15;
+                const innerTextRadius = innerRadius + 10;
                 const availableRadial = outerTextRadius - innerTextRadius;
                 
-                // Calculate font sizes based on slice width at each position
-                // Then figure out spacing based on those sizes
-                let letterData = [];
+                // First pass: calculate ideal font sizes based on slice width
+                let idealSizes = [];
+                let totalHeight = 0;
                 
                 for (let j = 0; j < textLength; j++) {
-                    // Estimate position (will refine after)
-                    const t = j / textLength;
+                    // Estimate position for this letter
+                    const t = (j + 0.5) / textLength;
                     const estimatedRadius = outerTextRadius - (t * availableRadial);
                     
                     // Slice width at this radius
                     const sliceWidth = 2 * estimatedRadius * Math.sin(sliceAngleRad / 2);
                     
-                    // Font size to fill the slice width (Staatliches is narrow, so multiply)
-                    const fontSize = sliceWidth * 0.82;
+                    // Ideal font size to fill the width (with some margin)
+                    const idealSize = sliceWidth * 0.7;
+                    idealSizes.push(idealSize);
                     
-                    letterData.push({
-                        char: text[j],
-                        fontSize: fontSize,
-                        // Height is roughly equal to fontSize for this font
-                        height: fontSize * 0.9
-                    });
+                    // Staatliches height is roughly 1.1x the font size
+                    totalHeight += idealSize * 1.0;
                 }
                 
-                // Now calculate actual positions based on letter heights
-                // Start from outer edge, stack letters inward
-                let currentRadius = outerTextRadius;
+                // Calculate scale factor to fit all letters
+                const scaleFactor = Math.min(1, availableRadial / totalHeight);
                 
-                for (let j = 0; j < letterData.length; j++) {
-                    const ld = letterData[j];
+                // Second pass: render with scaled sizes
+                let currentY = outerTextRadius;
+                
+                for (let j = 0; j < textLength; j++) {
+                    const fontSize = idealSizes[j] * scaleFactor;
+                    const letterHeight = fontSize * 1.0;
                     
-                    // Position this letter
-                    const letterRadius = currentRadius - (ld.height / 2);
+                    // Position at center of this letter's space
+                    const letterRadius = currentY - (letterHeight / 2);
                     
-                    // Make sure we don't go past inner boundary
                     if (letterRadius < innerTextRadius) break;
                     
                     const lx = cx + letterRadius * Math.cos(midAngle);
                     const ly = cy + letterRadius * Math.sin(midAngle);
                     
                     // Shadow
-                    const shadowOffset = Math.max(1.5, ld.fontSize * 0.06);
+                    const shadowOffset = Math.max(1.5, fontSize * 0.06);
                     svgContent += `<text 
                         x="${lx + shadowOffset}" 
                         y="${ly + shadowOffset}" 
                         font-family="Staatliches, Impact, sans-serif"
-                        font-size="${ld.fontSize}"
+                        font-size="${fontSize}"
                         text-anchor="middle" 
                         dominant-baseline="middle"
                         fill="#000000"
                         transform="rotate(${midAngleDeg}, ${lx + shadowOffset}, ${ly + shadowOffset})"
-                    >${ld.char}</text>`;
+                    >${text[j]}</text>`;
                     
                     // Main letter
                     svgContent += `<text 
                         x="${lx}" 
                         y="${ly}" 
                         font-family="Staatliches, Impact, sans-serif"
-                        font-size="${ld.fontSize}"
+                        font-size="${fontSize}"
                         text-anchor="middle" 
                         dominant-baseline="middle"
                         fill="#ffffff"
@@ -493,10 +490,10 @@
                         stroke-width="2"
                         paint-order="stroke fill"
                         transform="rotate(${midAngleDeg}, ${lx}, ${ly})"
-                    >${ld.char}</text>`;
+                    >${text[j]}</text>`;
                     
-                    // Move inward for next letter
-                    currentRadius -= ld.height;
+                    // Move to next position
+                    currentY -= letterHeight;
                 }
             }
             
