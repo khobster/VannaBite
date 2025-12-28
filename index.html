@@ -56,7 +56,6 @@
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
         }
         
-        /* WATCHING: Shaking/Vibrating (Nervous) */
         @keyframes animWatching { 
             0% { transform: translateX(0); } 
             25% { transform: translateX(-3px) rotate(-1deg); }
@@ -64,7 +63,6 @@
             100% { transform: translateX(0); }
         }
 
-        /* WIN: Bouncing Happy Dance */
         @keyframes animWin { 
             0%, 100% { transform: translateY(0); } 
             50% { transform: translateY(-20px); } 
@@ -73,7 +71,6 @@
         .vanna-container.watching .vanna-img { animation: animWatching 0.1s linear infinite; }
         .vanna-container.win .vanna-img { animation: animWin 0.4s ease-in-out infinite; }
         
-        /* === 1980s WHEEL OF FORTUNE === */
         .wheel-container { 
             position: relative; 
             width: 500px; 
@@ -81,7 +78,6 @@
             margin: 20px 0; 
         }
         
-        /* Gold outer rim */
         .wheel-outer-rim {
             position: absolute;
             width: 100%;
@@ -94,7 +90,6 @@
                 0 8px 25px rgba(0,0,0,0.6);
         }
         
-        /* The wheel with segments */
         .wheel {
             position: absolute;
             width: calc(100% - 24px);
@@ -111,7 +106,6 @@
             height: 100%;
         }
         
-        /* Green center hub */
         .center-hub {
             position: absolute; 
             top: 50%; 
@@ -143,7 +137,6 @@
             transform: translate(-50%, -50%) scale(1.05);
         }
         
-        /* Classic red flipper/pointer */
         .pointer {
             position: absolute; 
             top: -5px; 
@@ -314,10 +307,10 @@
         
         <div class="controls">
             <div class="input-group">
-                <input type="text" id="new-option" placeholder="ADD DINNER OPTION..." maxlength="12">
+                <input type="text" id="new-option" placeholder="ADD DINNER OPTION..." maxlength="8">
                 <button id="add-btn">ADD</button>
             </div>
-            <div class="char-limit">12 CHARACTER LIMIT</div>
+            <div class="char-limit">8 CHARACTER MAX</div>
             <div class="option-list">
                 <h3>DINNER OPTIONS</h3>
                 <div id="option-count"></div>
@@ -329,12 +322,11 @@
     </div>
     
     <script>
-        const MAX_CHARS = 12;
+        const MAX_CHARS = 8;
         let dinnerOptions = ["PIZZA", "TACOS", "PASTA", "BURGERS", "CHINESE", "SUSHI", "BBQ", "SALAD"];
         let wheelColors = [];
         let blackSliceIndex = 0;
 
-        // EQUIDISTANT HUE COLOR GENERATION
         function generateWheelColors(count) {
             if (count === 0) return [];
             
@@ -363,14 +355,17 @@
         const resultDiv = document.getElementById('result');
         
         function updateVanna(state) {
-            vannaContainer.classList.remove('idle', 'watching', 'win');
-            if (state !== 'idle') {
-                vannaContainer.classList.add(state);
-            }
+            vannaContainer.className = 'vanna-container';
             
-            if (state === 'idle') vannaImg.src = 'vanna_bite_idle.png';
-            if (state === 'watching') vannaImg.src = 'vanna_bite_watching.png';
-            if (state === 'win') vannaImg.src = 'vanna_bite_winning.png';
+            if (state === 'watching') {
+                vannaContainer.classList.add('watching');
+                vannaImg.src = 'vanna_bite_watching.png';
+            } else if (state === 'win') {
+                vannaContainer.classList.add('win');
+                vannaImg.src = 'vanna_bite_winning.png';
+            } else {
+                vannaImg.src = 'vanna_bite_idle.png';
+            }
         }
         
         function createWheel() {
@@ -418,7 +413,7 @@
                 svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#a67c00" stroke-width="3"/>`;
             }
             
-            // Draw text - sized to FILL the slice width at each position
+            // Draw text - properly sized to fit slice
             for (let i = 0; i < n; i++) {
                 const midAngleDeg = (i + 0.5) * sliceAngle;
                 const midAngle = (midAngleDeg - 90) * Math.PI / 180;
@@ -427,32 +422,33 @@
                 
                 if (textLength === 0) continue;
                 
-                // Available radial space
-                const textStartRadius = radius - 15;
-                const textEndRadius = innerRadius + 8;
-                const availableRadial = textStartRadius - textEndRadius;
+                // Available radial space for text
+                const outerTextRadius = radius - 15;
+                const innerTextRadius = innerRadius + 10;
+                const availableRadial = outerTextRadius - innerTextRadius;
                 
-                // Calculate letter spacing to use available space
+                // Calculate letter spacing (how far apart letters are vertically)
                 const letterSpacing = availableRadial / textLength;
                 
                 for (let j = 0; j < textLength; j++) {
-                    // Position along the radius
-                    const letterRadius = textStartRadius - (j * letterSpacing) - (letterSpacing / 2);
+                    // Position: first letter at outer edge, last letter near center
+                    const letterRadius = outerTextRadius - (j * letterSpacing) - (letterSpacing / 2);
                     
-                    // Calculate slice width at this radius (arc length)
-                    // Arc width = angle (in radians) * radius
-                    // But we want the chord-ish width, so use a factor
-                    const sliceWidthAtRadius = sliceAngleRad * letterRadius * 0.75;
+                    // Calculate the WIDTH of the slice at this radius
+                    const sliceWidthAtRadius = 2 * letterRadius * Math.sin(sliceAngleRad / 2);
                     
-                    // Font size = fill most of the slice width
-                    // Staatliches is tall and narrow, so we can go bigger
-                    const fontSize = Math.min(sliceWidthAtRadius * 1.4, letterSpacing * 1.1);
+                    // Font size is the MINIMUM of:
+                    // 1. What fits the slice width (with margin)
+                    // 2. What fits the letter spacing (so letters don't overlap)
+                    const maxByWidth = sliceWidthAtRadius * 0.9;
+                    const maxBySpacing = letterSpacing * 0.95;
+                    const fontSize = Math.min(maxByWidth, maxBySpacing);
                     
                     const lx = cx + letterRadius * Math.cos(midAngle);
                     const ly = cy + letterRadius * Math.sin(midAngle);
                     
                     // Shadow
-                    const shadowOffset = Math.max(2, fontSize / 10);
+                    const shadowOffset = Math.max(1.5, fontSize * 0.07);
                     svgContent += `<text 
                         x="${lx + shadowOffset}" 
                         y="${ly + shadowOffset}" 
@@ -464,7 +460,7 @@
                         transform="rotate(${midAngleDeg}, ${lx + shadowOffset}, ${ly + shadowOffset})"
                     >${text[j]}</text>`;
                     
-                    // Main letter
+                    // Main letter - white with black stroke
                     svgContent += `<text 
                         x="${lx}" 
                         y="${ly}" 
