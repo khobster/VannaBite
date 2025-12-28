@@ -35,12 +35,12 @@
                 -1px -1px 0px #fff8dc;
         }
         
-        .container { display: flex; flex-direction: column; align-items: center; max-width: 1000px; width: 100%; }
-        .game-area { display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%; }
+        .container { display: flex; flex-direction: column; align-items: center; max-width: 1100px; width: 100%; }
+        .game-area { display: flex; align-items: center; justify-content: center; gap: 30px; width: 100%; }
         
         .vanna-container { 
-            width: 300px; 
-            height: 420px; 
+            width: 380px; 
+            height: 520px; 
             position: relative; 
             flex-shrink: 0;
             display: flex;
@@ -54,33 +54,30 @@
             max-width: 100%;
             object-fit: contain;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
-            transition: transform 0.1s; 
         }
         
-        @keyframes animIdle { 
-            0%, 100% { transform: scale(1); } 
-            50% { transform: scale(1.02, 0.98); }
-        }
+        /* WATCHING: Shaking/Vibrating (Nervous) */
         @keyframes animWatching { 
             0% { transform: translateX(0); } 
             25% { transform: translateX(-3px) rotate(-1deg); }
             75% { transform: translateX(3px) rotate(1deg); }
             100% { transform: translateX(0); }
         }
+
+        /* WIN: Bouncing Happy Dance */
         @keyframes animWin { 
             0%, 100% { transform: translateY(0); } 
             50% { transform: translateY(-20px); } 
         }
         
-        .vanna-container.idle .vanna-img { animation: animIdle 2s ease-in-out infinite; }
         .vanna-container.watching .vanna-img { animation: animWatching 0.1s linear infinite; }
         .vanna-container.win .vanna-img { animation: animWin 0.4s ease-in-out infinite; }
         
         /* === 1980s WHEEL OF FORTUNE === */
         .wheel-container { 
             position: relative; 
-            width: 440px; 
-            height: 440px; 
+            width: 480px; 
+            height: 480px; 
             margin: 20px 0; 
         }
         
@@ -120,8 +117,8 @@
             top: 50%; 
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 120px; 
-            height: 120px;
+            width: 130px; 
+            height: 130px;
             background: radial-gradient(circle at 40% 35%, #5dbe5d 0%, #3aa63a 40%, #2d8a2d 70%, #1f6b1f 100%);
             border-radius: 50%; 
             z-index: 10;
@@ -130,7 +127,7 @@
             align-items: center; 
             justify-content: center;
             color: #fff; 
-            font-size: 22px;
+            font-size: 24px;
             font-family: 'Staatliches', cursive;
             letter-spacing: 1px;
             text-shadow: 2px 2px 0px rgba(0,0,0,0.7);
@@ -155,25 +152,25 @@
             z-index: 15;
             width: 0;
             height: 0;
-            border-left: 18px solid transparent;
-            border-right: 18px solid transparent;
-            border-top: 50px solid #cc0000;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 55px solid #cc0000;
             filter: drop-shadow(2px 3px 3px rgba(0,0,0,0.5));
         }
         
         .pointer::after {
             content: '';
             position: absolute;
-            top: -50px;
-            left: -13px;
+            top: -55px;
+            left: -14px;
             width: 0;
             height: 0;
-            border-left: 13px solid transparent;
-            border-right: 13px solid transparent;
-            border-top: 42px solid #ff3333;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 46px solid #ff3333;
         }
         
-        .controls { margin-top: 25px; display: flex; flex-direction: column; width: 100%; max-width: 420px; }
+        .controls { margin-top: 25px; display: flex; flex-direction: column; width: 100%; max-width: 480px; }
         .input-group { display: flex; margin-bottom: 15px; width: 100%; }
         
         input {
@@ -280,11 +277,11 @@
             font-family: 'Staatliches', cursive;
         }
         
-        @media (max-width: 800px) {
+        @media (max-width: 900px) {
             .game-area { flex-direction: column; }
-            .vanna-container { width: 220px; height: 320px; }
-            .wheel-container { width: 340px; height: 340px; }
-            .center-hub { width: 90px; height: 90px; font-size: 16px; }
+            .vanna-container { width: 280px; height: 380px; }
+            .wheel-container { width: 360px; height: 360px; }
+            .center-hub { width: 100px; height: 100px; font-size: 18px; }
             h1 { font-size: 2.8rem; letter-spacing: 2px; }
         }
     </style>
@@ -375,11 +372,11 @@
             
             wheelColors = generateWheelColors(n);
             const sliceAngle = 360 / n;
-            const size = 416;
+            const size = 456;
             const cx = size / 2;
             const cy = size / 2;
             const radius = size / 2;
-            const innerRadius = 65;
+            const innerRadius = 70;
             
             let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`;
             
@@ -409,37 +406,62 @@
                 svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#a67c00" stroke-width="3"/>`;
             }
             
-            // Draw text - WHITE with heavy BLACK stroke
+            // Draw text - vertical, scaling DOWN as we go toward center
             for (let i = 0; i < n; i++) {
                 const midAngleDeg = (i + 0.5) * sliceAngle;
                 const midAngle = (midAngleDeg - 90) * Math.PI / 180;
                 const text = dinnerOptions[i].toUpperCase();
+                const textLength = text.length;
                 
-                const textRadius = radius - 22;
-                const availableLength = textRadius - innerRadius - 10;
-                const maxChars = Math.min(text.length, 8);
-                // Tighter spacing between letters
-                const letterHeight = Math.min(24, (availableLength / maxChars) * 0.92);
+                // Available space
+                const textStartRadius = radius - 18;
+                const textEndRadius = innerRadius + 10;
+                const availableLength = textStartRadius - textEndRadius;
                 
-                for (let j = 0; j < maxChars; j++) {
-                    const letterRadius = textRadius - (j * letterHeight);
-                    if (letterRadius < innerRadius + 12) break;
+                // Calculate spacing to fit all letters
+                const letterSpacing = Math.min(24, availableLength / textLength) * 0.92;
+                
+                // Base font size at outer edge - scales with number of slices
+                let maxFontSize;
+                if (n <= 6) {
+                    maxFontSize = 28;
+                } else if (n <= 10) {
+                    maxFontSize = 24;
+                } else if (n <= 16) {
+                    maxFontSize = 20;
+                } else {
+                    maxFontSize = 16;
+                }
+                
+                // Minimum font size at inner edge
+                const minFontSize = maxFontSize * 0.5;
+                
+                for (let j = 0; j < textLength; j++) {
+                    const letterRadius = textStartRadius - (j * letterSpacing);
+                    
+                    // Stop if we'd go past the inner hub
+                    if (letterRadius < textEndRadius) break;
+                    
+                    // Calculate font size - linear scale from max at outer to min at inner
+                    const progress = j / Math.max(textLength - 1, 1);
+                    const fontSize = Math.round(maxFontSize - (progress * (maxFontSize - minFontSize)));
                     
                     const lx = cx + letterRadius * Math.cos(midAngle);
                     const ly = cy + letterRadius * Math.sin(midAngle);
                     
-                    const fontSize = Math.min(28, letterHeight + 6);
+                    // Shadow offset scales with font size
+                    const shadowOffset = Math.max(2, fontSize / 12);
                     
-                    // Heavy black drop shadow - offset down and right
+                    // Heavy black drop shadow
                     svgContent += `<text 
-                        x="${lx + 3}" 
-                        y="${ly + 3}" 
+                        x="${lx + shadowOffset}" 
+                        y="${ly + shadowOffset}" 
                         font-family="Staatliches, Impact, sans-serif"
                         font-size="${fontSize}"
                         text-anchor="middle" 
                         dominant-baseline="middle"
                         fill="#000000"
-                        transform="rotate(${midAngleDeg}, ${lx + 3}, ${ly + 3})"
+                        transform="rotate(${midAngleDeg}, ${lx + shadowOffset}, ${ly + shadowOffset})"
                     >${text[j]}</text>`;
                     
                     // White text on top with black stroke
