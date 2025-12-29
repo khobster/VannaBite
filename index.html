@@ -48,12 +48,14 @@
             justify-content: center;
         }
 
+        /* Vanna image - NO animation by default */
         .vanna-img {
             width: auto;
             height: 100%;
             max-width: 100%;
             object-fit: contain;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+            animation: none !important;
         }
         
         @keyframes animWatching { 
@@ -68,8 +70,13 @@
             50% { transform: translateY(-20px); } 
         }
         
-        .vanna-container.watching .vanna-img { animation: animWatching 0.1s linear infinite; }
-        .vanna-container.win .vanna-img { animation: animWin 0.4s ease-in-out infinite; }
+        /* Only animate when specifically these classes are added */
+        .vanna-container.is-watching .vanna-img { 
+            animation: animWatching 0.1s linear infinite !important; 
+        }
+        .vanna-container.is-winning .vanna-img { 
+            animation: animWin 0.4s ease-in-out infinite !important; 
+        }
         
         .wheel-container { 
             position: relative; 
@@ -355,15 +362,17 @@
         const resultDiv = document.getElementById('result');
         
         function updateVanna(state) {
+            // Remove ALL classes except base
             vannaContainer.className = 'vanna-container';
             
             if (state === 'watching') {
-                vannaContainer.classList.add('watching');
+                vannaContainer.classList.add('is-watching');
                 vannaImg.src = 'vanna_bite_watching.png';
             } else if (state === 'win') {
-                vannaContainer.classList.add('win');
+                vannaContainer.classList.add('is-winning');
                 vannaImg.src = 'vanna_bite_winning.png';
             } else {
+                // IDLE - no class, no animation
                 vannaImg.src = 'vanna_bite_idle.png';
             }
         }
@@ -413,7 +422,7 @@
                 svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#a67c00" stroke-width="3"/>`;
             }
             
-            // Draw text - BANKRUPT style scaling
+            // Draw text - letters STRETCHED to fill slice width
             for (let i = 0; i < n; i++) {
                 const midAngleDeg = (i + 0.5) * sliceAngle;
                 const midAngle = (midAngleDeg - 90) * Math.PI / 180;
@@ -422,78 +431,64 @@
                 
                 if (textLength === 0) continue;
                 
-                const outerTextRadius = radius - 15;
-                const innerTextRadius = innerRadius + 10;
+                const outerTextRadius = radius - 12;
+                const innerTextRadius = innerRadius + 8;
                 const availableRadial = outerTextRadius - innerTextRadius;
                 
-                // First pass: calculate ideal font sizes based on slice width
-                let idealSizes = [];
-                let totalHeight = 0;
+                // Base font size - we'll stretch horizontally to fill width
+                const baseFontSize = availableRadial / textLength * 0.95;
                 
                 for (let j = 0; j < textLength; j++) {
-                    // Estimate position for this letter
-                    const t = (j + 0.5) / textLength;
-                    const estimatedRadius = outerTextRadius - (t * availableRadial);
-                    
-                    // Slice width at this radius
-                    const sliceWidth = 2 * estimatedRadius * Math.sin(sliceAngleRad / 2);
-                    
-                    // Ideal font size to fill the width (with some margin)
-                    const idealSize = sliceWidth * 0.7;
-                    idealSizes.push(idealSize);
-                    
-                    // Staatliches height is roughly 1.1x the font size
-                    totalHeight += idealSize * 1.0;
-                }
-                
-                // Calculate scale factor to fit all letters
-                const scaleFactor = Math.min(1, availableRadial / totalHeight);
-                
-                // Second pass: render with scaled sizes
-                let currentY = outerTextRadius;
-                
-                for (let j = 0; j < textLength; j++) {
-                    const fontSize = idealSizes[j] * scaleFactor;
-                    const letterHeight = fontSize * 1.0;
-                    
-                    // Position at center of this letter's space
-                    const letterRadius = currentY - (letterHeight / 2);
+                    // Position along radius
+                    const letterRadius = outerTextRadius - (j * baseFontSize) - (baseFontSize / 2);
                     
                     if (letterRadius < innerTextRadius) break;
+                    
+                    // Calculate slice width at this radius
+                    const sliceWidth = 2 * letterRadius * Math.sin(sliceAngleRad / 2);
+                    
+                    // Staatliches character is roughly 0.55x as wide as tall
+                    // Calculate how much to stretch to fill slice width
+                    const naturalWidth = baseFontSize * 0.55;
+                    const targetWidth = sliceWidth * 0.85; // Fill 85% of slice
+                    const scaleX = targetWidth / naturalWidth;
                     
                     const lx = cx + letterRadius * Math.cos(midAngle);
                     const ly = cy + letterRadius * Math.sin(midAngle);
                     
+                    // Combined transform: rotate then scale horizontally
+                    const transform = `rotate(${midAngleDeg}, ${lx}, ${ly}) scale(${scaleX}, 1)`;
+                    
+                    // For stretched text, we need to adjust x position for the scale
+                    const adjustedX = lx / scaleX;
+                    
                     // Shadow
-                    const shadowOffset = Math.max(1.5, fontSize * 0.06);
+                    const shadowOffset = 2;
                     svgContent += `<text 
-                        x="${lx + shadowOffset}" 
+                        x="${adjustedX + shadowOffset/scaleX}" 
                         y="${ly + shadowOffset}" 
                         font-family="Staatliches, Impact, sans-serif"
-                        font-size="${fontSize}"
+                        font-size="${baseFontSize}"
                         text-anchor="middle" 
                         dominant-baseline="middle"
                         fill="#000000"
-                        transform="rotate(${midAngleDeg}, ${lx + shadowOffset}, ${ly + shadowOffset})"
+                        transform="${transform}"
                     >${text[j]}</text>`;
                     
                     // Main letter
                     svgContent += `<text 
-                        x="${lx}" 
+                        x="${adjustedX}" 
                         y="${ly}" 
                         font-family="Staatliches, Impact, sans-serif"
-                        font-size="${fontSize}"
+                        font-size="${baseFontSize}"
                         text-anchor="middle" 
                         dominant-baseline="middle"
                         fill="#ffffff"
                         stroke="#000000"
-                        stroke-width="2"
+                        stroke-width="1.5"
                         paint-order="stroke fill"
-                        transform="rotate(${midAngleDeg}, ${lx}, ${ly})"
+                        transform="${transform}"
                     >${text[j]}</text>`;
-                    
-                    // Move to next position
-                    currentY -= letterHeight;
                 }
             }
             
