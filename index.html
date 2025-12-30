@@ -40,36 +40,38 @@
         .vanna-container { 
             width: 420px; 
             height: 580px; 
-            position: relative; 
             flex-shrink: 0;
             display: flex;
             align-items: flex-end;
             justify-content: center;
+            /* No position relative, no nothing that could cause issues */
         }
 
-        /* Vanna - COMPLETELY STATIC */
+        /* VANNA - ABSOLUTE MINIMAL STYLING */
         #vanna-img {
-            width: auto;
             height: 100%;
             max-width: 100%;
             object-fit: contain;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+        }
+        
+        /* ONLY these classes trigger animation - nothing else */
+        .vanna-shaking #vanna-img { 
+            animation: shake 0.1s linear infinite; 
+        }
+        .vanna-bouncing #vanna-img { 
+            animation: bounce 0.4s ease-in-out infinite; 
         }
         
         @keyframes shake { 
-            0% { transform: translateX(0); } 
+            0%, 100% { transform: translateX(0); } 
             25% { transform: translateX(-3px) rotate(-1deg); }
             75% { transform: translateX(3px) rotate(1deg); }
-            100% { transform: translateX(0); }
         }
 
         @keyframes bounce { 
             0%, 100% { transform: translateY(0); } 
             50% { transform: translateY(-20px); } 
         }
-        
-        .vanna-container.shake #vanna-img { animation: shake 0.1s linear infinite; }
-        .vanna-container.bounce #vanna-img { animation: bounce 0.4s ease-in-out infinite; }
         
         .wheel-container { 
             position: relative; 
@@ -101,10 +103,7 @@
             transition: transform 8s cubic-bezier(0.15, 0.85, 0.1, 1);
         }
         
-        .wheel svg {
-            width: 100%;
-            height: 100%;
-        }
+        .wheel svg { width: 100%; height: 100%; }
         
         .center-hub {
             position: absolute; 
@@ -133,9 +132,7 @@
             transition: transform 0.2s;
         }
         
-        .center-hub:hover { 
-            transform: translate(-50%, -50%) scale(1.05);
-        }
+        .center-hub:hover { transform: translate(-50%, -50%) scale(1.05); }
         
         .pointer {
             position: absolute; 
@@ -143,8 +140,7 @@
             left: 50%; 
             transform: translateX(-50%);
             z-index: 15;
-            width: 0;
-            height: 0;
+            width: 0; height: 0;
             border-left: 22px solid transparent;
             border-right: 22px solid transparent;
             border-top: 60px solid #cc0000;
@@ -154,16 +150,83 @@
         .pointer::after {
             content: '';
             position: absolute;
-            top: -60px;
-            left: -16px;
-            width: 0;
-            height: 0;
+            top: -60px; left: -16px;
+            width: 0; height: 0;
             border-left: 16px solid transparent;
             border-right: 16px solid transparent;
             border-top: 50px solid #ff3333;
         }
         
-        /* === RETRO 70s/80s GAME SHOW CONTROLS === */
+        /* === WHEEL OF FORTUNE LETTER BOARD RESULT === */
+        .result {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+        }
+        
+        .result-board {
+            position: relative;
+            padding: 30px 40px;
+            background: linear-gradient(180deg, #2d5a3d 0%, #1e3d29 100%);
+            border-radius: 20px;
+            box-shadow: 
+                inset 0 0 30px rgba(0,0,0,0.5),
+                0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        /* Gold sunburst border */
+        .result-board::before {
+            content: '';
+            position: absolute;
+            top: -15px; left: -15px; right: -15px; bottom: -15px;
+            background: 
+                repeating-conic-gradient(
+                    from 0deg,
+                    #d4a84b 0deg 3deg,
+                    #8b6914 3deg 6deg
+                );
+            border-radius: 30px;
+            z-index: -1;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+        }
+        
+        .result-label {
+            font-family: 'Staatliches', cursive;
+            font-size: 24px;
+            color: #ffd700;
+            text-shadow: 2px 2px 0 #8b6914;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+        }
+        
+        .letter-tiles {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .letter-tile {
+            width: 50px;
+            height: 60px;
+            background: linear-gradient(180deg, #ffffff 0%, #e8e8e8 100%);
+            border: 3px solid #333;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Staatliches', serif;
+            font-size: 36px;
+            color: #111;
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.8),
+                inset 0 -2px 0 rgba(0,0,0,0.1),
+                3px 3px 0 rgba(0,0,0,0.3);
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+        }
+        
+        /* === RETRO CONTROLS === */
         .controls { 
             margin-top: 30px; 
             display: flex; 
@@ -175,14 +238,12 @@
         .input-group { 
             display: flex; 
             margin-bottom: 10px; 
-            width: 100%; 
         }
         
         input {
             flex-grow: 1; 
             padding: 16px 20px;
             border: none;
-            margin-right: 0; 
             font-size: 20px;
             font-family: 'Staatliches', cursive;
             background: linear-gradient(180deg, #fff8dc 0%, #f0e68c 100%);
@@ -194,14 +255,8 @@
                 4px 4px 0 #8b6914;
         }
         
-        input::placeholder {
-            color: #888;
-        }
-        
-        input:focus {
-            outline: none;
-            background: linear-gradient(180deg, #fffacd 0%, #fff8dc 100%);
-        }
+        input::placeholder { color: #888; }
+        input:focus { outline: none; background: linear-gradient(180deg, #fffacd 0%, #fff8dc 100%); }
         
         button {
             padding: 16px 32px; 
@@ -223,18 +278,12 @@
         button:hover { 
             background: linear-gradient(180deg, #ff7f50 0%, #e63900 100%);
             transform: translate(-1px, -1px);
-            box-shadow: 
-                inset 0 2px 0 rgba(255,255,255,0.3),
-                inset 0 -3px 0 rgba(0,0,0,0.2),
-                5px 5px 0 #8b2500;
+            box-shadow: inset 0 2px 0 rgba(255,255,255,0.3), inset 0 -3px 0 rgba(0,0,0,0.2), 5px 5px 0 #8b2500;
         }
         
         button:active {
             transform: translate(2px, 2px);
-            box-shadow: 
-                inset 0 2px 0 rgba(255,255,255,0.3),
-                inset 0 -3px 0 rgba(0,0,0,0.2),
-                2px 2px 0 #8b2500;
+            box-shadow: inset 0 2px 0 rgba(255,255,255,0.3), inset 0 -3px 0 rgba(0,0,0,0.2), 2px 2px 0 #8b2500;
         }
         
         .char-limit {
@@ -247,7 +296,6 @@
         
         .option-list {
             margin-top: 15px; 
-            width: 100%;
             background: linear-gradient(180deg, #4169e1 0%, #2a4db5 100%);
             box-shadow: 
                 inset 0 2px 0 rgba(255,255,255,0.2),
@@ -265,15 +313,10 @@
             font-size: 1.6rem;
             letter-spacing: 3px;
             text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
-            box-shadow: 
-                inset 0 2px 0 rgba(255,255,255,0.4),
-                inset 0 -3px 0 rgba(0,0,0,0.15);
+            box-shadow: inset 0 2px 0 rgba(255,255,255,0.4), inset 0 -3px 0 rgba(0,0,0,0.15);
         }
         
-        .options-scroll {
-            max-height: 220px; 
-            overflow-y: auto;
-        }
+        .options-scroll { max-height: 220px; overflow-y: auto; }
         
         .option-item {
             display: flex; 
@@ -284,23 +327,19 @@
             background: rgba(255,255,255,0.05);
         }
         
-        .option-item:nth-child(even) {
-            background: rgba(0,0,0,0.1);
-        }
+        .option-item:nth-child(even) { background: rgba(0,0,0,0.1); }
         
         .option-item span { 
             display: flex; 
             align-items: center; 
             gap: 14px;
-            font-family: 'Staatliches', cursive;
             font-size: 20px;
             letter-spacing: 1px;
             text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
         }
         
         .color-dot { 
-            width: 28px; 
-            height: 28px; 
+            width: 28px; height: 28px; 
             border: 3px solid #fff;
             box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
         }
@@ -310,33 +349,11 @@
             color: white; 
             padding: 8px 16px;
             font-size: 16px;
-            font-family: 'Staatliches', cursive;
-            box-shadow: 
-                inset 0 1px 0 rgba(255,255,255,0.3),
-                2px 2px 0 #660000;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 2px 2px 0 #660000;
             text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
         }
         
-        .delete-btn:hover {
-            background: linear-gradient(180deg, #ff5555 0%, #dd1111 100%);
-        }
-        
-        .result {
-            margin-top: 30px; 
-            padding: 24px 60px;
-            background: linear-gradient(180deg, #ffd700 0%, #daa520 100%);
-            color: #1a1a00; 
-            text-align: center; 
-            font-size: 36px; 
-            display: none;
-            font-family: 'Staatliches', cursive;
-            letter-spacing: 3px;
-            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
-            box-shadow: 
-                inset 0 3px 0 rgba(255,255,255,0.4),
-                inset 0 -4px 0 rgba(0,0,0,0.15),
-                8px 8px 0 #8b6914;
-        }
+        .delete-btn:hover { background: linear-gradient(180deg, #ff5555 0%, #dd1111 100%); }
         
         #option-count {
             text-align: center;
@@ -344,7 +361,6 @@
             color: rgba(255,255,255,0.7);
             font-size: 16px;
             letter-spacing: 3px;
-            font-family: 'Staatliches', cursive;
             text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
         }
         
@@ -353,7 +369,8 @@
             .vanna-container { width: 300px; height: 420px; }
             .wheel-container { width: 380px; height: 380px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
-            h1 { font-size: 2.8rem; letter-spacing: 2px; }
+            h1 { font-size: 2.8rem; }
+            .letter-tile { width: 40px; height: 50px; font-size: 28px; }
         }
     </style>
 </head>
@@ -374,7 +391,12 @@
             </div>
         </div>
         
-        <div class="result" id="result"></div>
+        <div class="result" id="result">
+            <div class="result-board">
+                <div class="result-label">TONIGHT'S DINNER</div>
+                <div class="letter-tiles" id="letter-tiles"></div>
+            </div>
+        </div>
         
         <div class="controls">
             <div class="input-group">
@@ -400,13 +422,10 @@
 
         function generateWheelColors(count) {
             if (count === 0) return [];
-            
             const colors = [];
             const colorCount = count - 1;
             const step = 360 / Math.max(colorCount, 1);
-            
             blackSliceIndex = Math.floor(count / 2);
-            
             let hueIndex = 0;
             for (let i = 0; i < count; i++) {
                 if (i === blackSliceIndex) {
@@ -424,22 +443,34 @@
         const vannaContainer = document.getElementById('vanna-container');
         const vannaImg = document.getElementById('vanna-img');
         const resultDiv = document.getElementById('result');
+        const letterTiles = document.getElementById('letter-tiles');
         
-        function setVannaState(state) {
+        function setVanna(state) {
+            // Strip ALL classes
             vannaContainer.className = 'vanna-container';
             
-            switch(state) {
-                case 'watching':
-                    vannaContainer.classList.add('shake');
-                    vannaImg.src = 'vanna_bite_watching.png';
-                    break;
-                case 'win':
-                    vannaContainer.classList.add('bounce');
-                    vannaImg.src = 'vanna_bite_winning.png';
-                    break;
-                default:
-                    vannaImg.src = 'vanna_bite_idle.png';
+            if (state === 'watching') {
+                vannaContainer.className = 'vanna-container vanna-shaking';
+                vannaImg.src = 'vanna_bite_watching.png';
+            } else if (state === 'win') {
+                vannaContainer.className = 'vanna-container vanna-bouncing';
+                vannaImg.src = 'vanna_bite_winning.png';
+            } else {
+                // IDLE - just the base class, nothing else
+                vannaImg.src = 'vanna_bite_idle.png';
             }
+        }
+        
+        function showResult(text) {
+            letterTiles.innerHTML = '';
+            for (const char of text.toUpperCase()) {
+                const tile = document.createElement('div');
+                tile.className = 'letter-tile';
+                tile.textContent = char === ' ' ? '' : char;
+                if (char === ' ') tile.style.background = 'transparent';
+                letterTiles.appendChild(tile);
+            }
+            resultDiv.style.display = 'flex';
         }
         
         function createWheel() {
@@ -454,116 +485,76 @@
             const sliceAngle = 360 / n;
             const sliceAngleRad = (sliceAngle * Math.PI) / 180;
             const size = 476;
-            const cx = size / 2;
-            const cy = size / 2;
-            const radius = size / 2;
-            const innerRadius = 75;
+            const cx = size / 2, cy = size / 2;
+            const radius = size / 2, innerRadius = 75;
             
-            let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`;
+            let svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`;
             
-            // Draw segments
+            // Segments
             for (let i = 0; i < n; i++) {
                 const startAngle = (i * sliceAngle - 90) * Math.PI / 180;
                 const endAngle = ((i + 1) * sliceAngle - 90) * Math.PI / 180;
-                
                 const x1 = cx + radius * Math.cos(startAngle);
                 const y1 = cy + radius * Math.sin(startAngle);
                 const x2 = cx + radius * Math.cos(endAngle);
                 const y2 = cy + radius * Math.sin(endAngle);
-                
                 const largeArc = sliceAngle > 180 ? 1 : 0;
-                
-                const pathD = `M ${cx} ${cy} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z`;
-                svgContent += `<path d="${pathD}" fill="${wheelColors[i].bg}" stroke="#222" stroke-width="1"/>`;
+                svg += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z" fill="${wheelColors[i].bg}" stroke="#222" stroke-width="1"/>`;
             }
             
             // Gold dividers
             for (let i = 0; i < n; i++) {
                 const angle = (i * sliceAngle - 90) * Math.PI / 180;
-                const x1 = cx + innerRadius * Math.cos(angle);
-                const y1 = cy + innerRadius * Math.sin(angle);
-                const x2 = cx + radius * Math.cos(angle);
-                const y2 = cy + radius * Math.sin(angle);
-                svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#a67c00" stroke-width="3"/>`;
+                svg += `<line x1="${cx + innerRadius * Math.cos(angle)}" y1="${cy + innerRadius * Math.sin(angle)}" x2="${cx + radius * Math.cos(angle)}" y2="${cy + radius * Math.sin(angle)}" stroke="#a67c00" stroke-width="3"/>`;
             }
             
-            // Text - stretched letters
+            // Text
             for (let i = 0; i < n; i++) {
                 const midAngleDeg = (i + 0.5) * sliceAngle;
                 const midAngle = (midAngleDeg - 90) * Math.PI / 180;
                 const text = dinnerOptions[i].toUpperCase().substring(0, MAX_CHARS);
-                const textLength = text.length;
+                if (!text.length) continue;
                 
-                if (textLength === 0) continue;
+                const outerR = radius - 12, innerR = innerRadius + 8;
+                const availableRadial = outerR - innerR;
+                const baseFontSize = availableRadial / text.length * 0.95;
                 
-                const outerTextRadius = radius - 12;
-                const innerTextRadius = innerRadius + 8;
-                const availableRadial = outerTextRadius - innerTextRadius;
-                const baseFontSize = availableRadial / textLength * 0.95;
-                
-                for (let j = 0; j < textLength; j++) {
-                    const letterRadius = outerTextRadius - (j * baseFontSize) - (baseFontSize / 2);
-                    if (letterRadius < innerTextRadius) break;
+                for (let j = 0; j < text.length; j++) {
+                    const letterRadius = outerR - (j * baseFontSize) - (baseFontSize / 2);
+                    if (letterRadius < innerR) break;
                     
                     const sliceWidth = 2 * letterRadius * Math.sin(sliceAngleRad / 2);
-                    const naturalWidth = baseFontSize * 0.55;
-                    const targetWidth = sliceWidth * 0.85;
-                    const scaleX = targetWidth / naturalWidth;
-                    
+                    const scaleX = (sliceWidth * 0.85) / (baseFontSize * 0.55);
                     const lx = cx + letterRadius * Math.cos(midAngle);
                     const ly = cy + letterRadius * Math.sin(midAngle);
                     const transform = `rotate(${midAngleDeg}, ${lx}, ${ly}) scale(${scaleX}, 1)`;
-                    const adjustedX = lx / scaleX;
+                    const ax = lx / scaleX;
                     
-                    // Shadow
-                    svgContent += `<text x="${adjustedX + 2/scaleX}" y="${ly + 2}" 
-                        font-family="Staatliches, Impact, sans-serif" font-size="${baseFontSize}"
-                        text-anchor="middle" dominant-baseline="middle" fill="#000000"
-                        transform="${transform}">${text[j]}</text>`;
-                    
-                    // Letter
-                    svgContent += `<text x="${adjustedX}" y="${ly}" 
-                        font-family="Staatliches, Impact, sans-serif" font-size="${baseFontSize}"
-                        text-anchor="middle" dominant-baseline="middle" fill="#ffffff"
-                        stroke="#000000" stroke-width="1.5" paint-order="stroke fill"
-                        transform="${transform}">${text[j]}</text>`;
+                    svg += `<text x="${ax + 2/scaleX}" y="${ly + 2}" font-family="Staatliches, Impact" font-size="${baseFontSize}" text-anchor="middle" dominant-baseline="middle" fill="#000" transform="${transform}">${text[j]}</text>`;
+                    svg += `<text x="${ax}" y="${ly}" font-family="Staatliches, Impact" font-size="${baseFontSize}" text-anchor="middle" dominant-baseline="middle" fill="#fff" stroke="#000" stroke-width="1.5" paint-order="stroke fill" transform="${transform}">${text[j]}</text>`;
                 }
             }
             
-            svgContent += '</svg>';
-            wheel.innerHTML = svgContent;
+            svg += '</svg>';
+            wheel.innerHTML = svg;
         }
         
         function updateList() {
             const list = document.getElementById('options-list');
             list.innerHTML = '';
             document.getElementById('option-count').innerText = `${dinnerOptions.length} DELICIOUS CHOICES`;
-            
             dinnerOptions.forEach((opt, i) => {
                 const div = document.createElement('div');
                 div.className = 'option-item';
-                const color = wheelColors[i] ? wheelColors[i].bg : '#888';
-                div.innerHTML = `
-                    <span><div class="color-dot" style="background:${color}"></div>${opt.toUpperCase()}</span>
-                    <button class="delete-btn" onclick="removeItem(${i})">✕</button>
-                `;
+                const color = wheelColors[i]?.bg || '#888';
+                div.innerHTML = `<span><div class="color-dot" style="background:${color}"></div>${opt.toUpperCase()}</span><button class="delete-btn" onclick="removeItem(${i})">✕</button>`;
                 list.appendChild(div);
             });
         }
         
-        function removeItem(i) {
-            dinnerOptions.splice(i, 1);
-            save(); refresh();
-        }
-        
-        function refresh() {
-            createWheel();
-            updateList();
-        }
-        
-        function save() {
-            localStorage.setItem('vannaBiteOptions', JSON.stringify(dinnerOptions));
-        }
+        function removeItem(i) { dinnerOptions.splice(i, 1); save(); refresh(); }
+        function refresh() { createWheel(); updateList(); }
+        function save() { localStorage.setItem('vannaBiteOptions', JSON.stringify(dinnerOptions)); }
 
         let isSpinning = false;
         let currentRotation = 0;
@@ -573,32 +564,23 @@
             isSpinning = true;
             resultDiv.style.display = 'none';
             
-            setVannaState('watching');
+            setVanna('watching');
             
             const n = dinnerOptions.length;
             const sliceAngle = 360 / n;
             const winnerIndex = Math.floor(Math.random() * n);
-            
             const targetRotation = 360 - (winnerIndex * sliceAngle + sliceAngle / 2);
-            // More spins for longer duration!
             const extraSpins = 360 * (8 + Math.floor(Math.random() * 6));
             const totalRotation = currentRotation + extraSpins + (targetRotation - (currentRotation % 360));
-            
             const finalRotation = totalRotation > currentRotation ? totalRotation : totalRotation + 360;
             currentRotation = finalRotation;
             
             wheel.style.transform = `rotate(${finalRotation}deg)`;
             
-            // Longer timeout to match 8 second spin
             setTimeout(() => {
-                setVannaState('win');
-                resultDiv.innerText = `TONIGHT: ${dinnerOptions[winnerIndex].toUpperCase()}!`;
-                resultDiv.style.display = 'block';
-                
-                setTimeout(() => {
-                    setVannaState('idle');
-                    isSpinning = false;
-                }, 4000);
+                setVanna('win');
+                showResult(dinnerOptions[winnerIndex]);
+                setTimeout(() => { setVanna('idle'); isSpinning = false; }, 4000);
             }, 8000);
         }
 
@@ -611,10 +593,7 @@
                 save(); refresh();
             }
         });
-        
-        document.getElementById('new-option').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('add-btn').click();
-        });
+        document.getElementById('new-option').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('add-btn').click(); });
 
         const saved = localStorage.getItem('vannaBiteOptions');
         if (saved) dinnerOptions = JSON.parse(saved);
