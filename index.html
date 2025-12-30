@@ -20,7 +20,6 @@
             background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
             padding: 20px;
             color: white;
-            letter-spacing: 0.5px;
         }
         
         h1 {
@@ -48,35 +47,29 @@
             justify-content: center;
         }
 
-        /* Vanna image - NO animation by default */
-        .vanna-img {
+        /* Vanna - COMPLETELY STATIC */
+        #vanna-img {
             width: auto;
             height: 100%;
             max-width: 100%;
             object-fit: contain;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
-            animation: none !important;
         }
         
-        @keyframes animWatching { 
+        @keyframes shake { 
             0% { transform: translateX(0); } 
             25% { transform: translateX(-3px) rotate(-1deg); }
             75% { transform: translateX(3px) rotate(1deg); }
             100% { transform: translateX(0); }
         }
 
-        @keyframes animWin { 
+        @keyframes bounce { 
             0%, 100% { transform: translateY(0); } 
             50% { transform: translateY(-20px); } 
         }
         
-        /* Only animate when specifically these classes are added */
-        .vanna-container.is-watching .vanna-img { 
-            animation: animWatching 0.1s linear infinite !important; 
-        }
-        .vanna-container.is-winning .vanna-img { 
-            animation: animWin 0.4s ease-in-out infinite !important; 
-        }
+        .vanna-container.shake #vanna-img { animation: shake 0.1s linear infinite; }
+        .vanna-container.bounce #vanna-img { animation: bounce 0.4s ease-in-out infinite; }
         
         .wheel-container { 
             position: relative; 
@@ -105,7 +98,7 @@
             left: 12px;
             border-radius: 50%;
             overflow: hidden;
-            transition: transform 5s cubic-bezier(0.17, 0.97, 0.12, 1);
+            transition: transform 8s cubic-bezier(0.15, 0.85, 0.1, 1);
         }
         
         .wheel svg {
@@ -170,118 +163,189 @@
             border-top: 50px solid #ff3333;
         }
         
-        .controls { margin-top: 25px; display: flex; flex-direction: column; width: 100%; max-width: 500px; }
-        .input-group { display: flex; margin-bottom: 15px; width: 100%; }
+        /* === RETRO 70s/80s GAME SHOW CONTROLS === */
+        .controls { 
+            margin-top: 30px; 
+            display: flex; 
+            flex-direction: column; 
+            width: 100%; 
+            max-width: 520px;
+        }
+        
+        .input-group { 
+            display: flex; 
+            margin-bottom: 10px; 
+            width: 100%; 
+        }
         
         input {
             flex-grow: 1; 
-            padding: 14px 15px;
-            border: 3px solid #d4a84b;
-            border-radius: 0;
-            margin-right: 10px; 
-            font-size: 18px;
+            padding: 16px 20px;
+            border: none;
+            margin-right: 0; 
+            font-size: 20px;
             font-family: 'Staatliches', cursive;
-            background-color: #1a1a2e; 
-            color: white;
+            background: linear-gradient(180deg, #fff8dc 0%, #f0e68c 100%);
+            color: #222;
             letter-spacing: 1px;
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.8),
+                inset 0 -3px 0 rgba(0,0,0,0.15),
+                4px 4px 0 #8b6914;
         }
         
         input::placeholder {
-            color: #555;
+            color: #888;
+        }
+        
+        input:focus {
+            outline: none;
+            background: linear-gradient(180deg, #fffacd 0%, #fff8dc 100%);
         }
         
         button {
-            padding: 14px 28px; 
-            background: linear-gradient(180deg, #d4a84b 0%, #a67c00 100%);
-            color: #1a1a00;
-            border: 3px solid #8b6914; 
-            border-radius: 0; 
+            padding: 16px 32px; 
+            background: linear-gradient(180deg, #ff6b35 0%, #d63000 100%);
+            color: #fff;
+            border: none;
             cursor: pointer;
-            font-size: 20px; 
+            font-size: 22px; 
             font-family: 'Staatliches', cursive;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                inset 0 -3px 0 rgba(0,0,0,0.2),
+                4px 4px 0 #8b2500;
+            transition: transform 0.1s, box-shadow 0.1s;
         }
+        
         button:hover { 
-            background: linear-gradient(180deg, #e8c252 0%, #c9952c 100%);
+            background: linear-gradient(180deg, #ff7f50 0%, #e63900 100%);
+            transform: translate(-1px, -1px);
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                inset 0 -3px 0 rgba(0,0,0,0.2),
+                5px 5px 0 #8b2500;
+        }
+        
+        button:active {
+            transform: translate(2px, 2px);
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                inset 0 -3px 0 rgba(0,0,0,0.2),
+                2px 2px 0 #8b2500;
+        }
+        
+        .char-limit {
+            text-align: right;
+            padding: 6px 4px;
+            color: #d4a84b;
+            font-size: 14px;
+            letter-spacing: 2px;
         }
         
         .option-list {
-            margin-top: 20px; 
+            margin-top: 15px; 
             width: 100%;
-            border: 3px solid #d4a84b;
-            background: #1a1a2e;
+            background: linear-gradient(180deg, #4169e1 0%, #2a4db5 100%);
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.2),
+                inset 0 -4px 0 rgba(0,0,0,0.2),
+                6px 6px 0 #1a2d6b;
         }
+        
         .option-list h3 {
             text-align: center; 
-            padding: 14px; 
+            padding: 16px; 
             margin: 0;
-            background: linear-gradient(180deg, #d4a84b 0%, #a67c00 100%);
+            background: linear-gradient(180deg, #ffd700 0%, #daa520 100%);
             font-family: 'Staatliches', cursive;
             color: #1a1a00; 
-            font-size: 1.5rem;
-            letter-spacing: 2px;
+            font-size: 1.6rem;
+            letter-spacing: 3px;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+            box-shadow: 
+                inset 0 2px 0 rgba(255,255,255,0.4),
+                inset 0 -3px 0 rgba(0,0,0,0.15);
         }
+        
         .options-scroll {
-            max-height: 200px; 
+            max-height: 220px; 
             overflow-y: auto;
         }
+        
         .option-item {
             display: flex; 
             justify-content: space-between; 
             align-items: center;
-            padding: 10px 15px; 
-            border-bottom: 1px solid #333;
+            padding: 12px 18px; 
+            border-bottom: 3px solid rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.05);
         }
+        
+        .option-item:nth-child(even) {
+            background: rgba(0,0,0,0.1);
+        }
+        
         .option-item span { 
             display: flex; 
             align-items: center; 
-            gap: 12px;
+            gap: 14px;
             font-family: 'Staatliches', cursive;
-            font-size: 18px;
+            font-size: 20px;
             letter-spacing: 1px;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
         }
+        
         .color-dot { 
-            width: 24px; 
-            height: 24px; 
-            border: 2px solid #000;
+            width: 28px; 
+            height: 28px; 
+            border: 3px solid #fff;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
         }
+        
         .delete-btn { 
-            background: #cc0000;
+            background: linear-gradient(180deg, #ff4444 0%, #cc0000 100%);
             color: white; 
-            padding: 6px 16px;
-            border: 2px solid #990000;
+            padding: 8px 16px;
             font-size: 16px;
             font-family: 'Staatliches', cursive;
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.3),
+                2px 2px 0 #660000;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+        }
+        
+        .delete-btn:hover {
+            background: linear-gradient(180deg, #ff5555 0%, #dd1111 100%);
         }
         
         .result {
-            margin-top: 25px; 
-            padding: 20px 50px;
-            background: linear-gradient(180deg, #d4a84b 0%, #a67c00 100%);
+            margin-top: 30px; 
+            padding: 24px 60px;
+            background: linear-gradient(180deg, #ffd700 0%, #daa520 100%);
             color: #1a1a00; 
             text-align: center; 
-            font-size: 32px; 
+            font-size: 36px; 
             display: none;
-            border: 4px solid #8b6914;
             font-family: 'Staatliches', cursive;
-            letter-spacing: 2px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+            letter-spacing: 3px;
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+            box-shadow: 
+                inset 0 3px 0 rgba(255,255,255,0.4),
+                inset 0 -4px 0 rgba(0,0,0,0.15),
+                8px 8px 0 #8b6914;
         }
         
         #option-count {
             text-align: center;
-            padding: 8px;
-            color: #888;
+            padding: 10px;
+            color: rgba(255,255,255,0.7);
             font-size: 16px;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             font-family: 'Staatliches', cursive;
-        }
-        
-        .char-limit {
-            text-align: center;
-            padding: 4px;
-            color: #666;
-            font-size: 12px;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
         }
         
         @media (max-width: 950px) {
@@ -299,7 +363,7 @@
         
         <div class="game-area">
             <div class="vanna-container" id="vanna-container">
-                <img id="vanna-img" src="vanna_bite_idle.png" class="vanna-img" alt="Vanna">
+                <img id="vanna-img" src="vanna_bite_idle.png" alt="Vanna">
             </div>
             
             <div class="wheel-container">
@@ -314,12 +378,12 @@
         
         <div class="controls">
             <div class="input-group">
-                <input type="text" id="new-option" placeholder="ADD DINNER OPTION..." maxlength="8">
+                <input type="text" id="new-option" placeholder="ENTER DINNER OPTION..." maxlength="8">
                 <button id="add-btn">ADD</button>
             </div>
-            <div class="char-limit">8 CHARACTER MAX</div>
+            <div class="char-limit">MAX 8 LETTERS</div>
             <div class="option-list">
-                <h3>DINNER OPTIONS</h3>
+                <h3>★ TONIGHT'S OPTIONS ★</h3>
                 <div id="option-count"></div>
                 <div class="options-scroll">
                     <div id="options-list"></div>
@@ -361,19 +425,20 @@
         const vannaImg = document.getElementById('vanna-img');
         const resultDiv = document.getElementById('result');
         
-        function updateVanna(state) {
-            // Remove ALL classes except base
+        function setVannaState(state) {
             vannaContainer.className = 'vanna-container';
             
-            if (state === 'watching') {
-                vannaContainer.classList.add('is-watching');
-                vannaImg.src = 'vanna_bite_watching.png';
-            } else if (state === 'win') {
-                vannaContainer.classList.add('is-winning');
-                vannaImg.src = 'vanna_bite_winning.png';
-            } else {
-                // IDLE - no class, no animation
-                vannaImg.src = 'vanna_bite_idle.png';
+            switch(state) {
+                case 'watching':
+                    vannaContainer.classList.add('shake');
+                    vannaImg.src = 'vanna_bite_watching.png';
+                    break;
+                case 'win':
+                    vannaContainer.classList.add('bounce');
+                    vannaImg.src = 'vanna_bite_winning.png';
+                    break;
+                default:
+                    vannaImg.src = 'vanna_bite_idle.png';
             }
         }
         
@@ -396,7 +461,7 @@
             
             let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`;
             
-            // Draw all segments
+            // Draw segments
             for (let i = 0; i < n; i++) {
                 const startAngle = (i * sliceAngle - 90) * Math.PI / 180;
                 const endAngle = ((i + 1) * sliceAngle - 90) * Math.PI / 180;
@@ -412,7 +477,7 @@
                 svgContent += `<path d="${pathD}" fill="${wheelColors[i].bg}" stroke="#222" stroke-width="1"/>`;
             }
             
-            // Draw gold divider lines
+            // Gold dividers
             for (let i = 0; i < n; i++) {
                 const angle = (i * sliceAngle - 90) * Math.PI / 180;
                 const x1 = cx + innerRadius * Math.cos(angle);
@@ -422,7 +487,7 @@
                 svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#a67c00" stroke-width="3"/>`;
             }
             
-            // Draw text - letters STRETCHED to fill slice width
+            // Text - stretched letters
             for (let i = 0; i < n; i++) {
                 const midAngleDeg = (i + 0.5) * sliceAngle;
                 const midAngle = (midAngleDeg - 90) * Math.PI / 180;
@@ -434,61 +499,34 @@
                 const outerTextRadius = radius - 12;
                 const innerTextRadius = innerRadius + 8;
                 const availableRadial = outerTextRadius - innerTextRadius;
-                
-                // Base font size - we'll stretch horizontally to fill width
                 const baseFontSize = availableRadial / textLength * 0.95;
                 
                 for (let j = 0; j < textLength; j++) {
-                    // Position along radius
                     const letterRadius = outerTextRadius - (j * baseFontSize) - (baseFontSize / 2);
-                    
                     if (letterRadius < innerTextRadius) break;
                     
-                    // Calculate slice width at this radius
                     const sliceWidth = 2 * letterRadius * Math.sin(sliceAngleRad / 2);
-                    
-                    // Staatliches character is roughly 0.55x as wide as tall
-                    // Calculate how much to stretch to fill slice width
                     const naturalWidth = baseFontSize * 0.55;
-                    const targetWidth = sliceWidth * 0.85; // Fill 85% of slice
+                    const targetWidth = sliceWidth * 0.85;
                     const scaleX = targetWidth / naturalWidth;
                     
                     const lx = cx + letterRadius * Math.cos(midAngle);
                     const ly = cy + letterRadius * Math.sin(midAngle);
-                    
-                    // Combined transform: rotate then scale horizontally
                     const transform = `rotate(${midAngleDeg}, ${lx}, ${ly}) scale(${scaleX}, 1)`;
-                    
-                    // For stretched text, we need to adjust x position for the scale
                     const adjustedX = lx / scaleX;
                     
                     // Shadow
-                    const shadowOffset = 2;
-                    svgContent += `<text 
-                        x="${adjustedX + shadowOffset/scaleX}" 
-                        y="${ly + shadowOffset}" 
-                        font-family="Staatliches, Impact, sans-serif"
-                        font-size="${baseFontSize}"
-                        text-anchor="middle" 
-                        dominant-baseline="middle"
-                        fill="#000000"
-                        transform="${transform}"
-                    >${text[j]}</text>`;
+                    svgContent += `<text x="${adjustedX + 2/scaleX}" y="${ly + 2}" 
+                        font-family="Staatliches, Impact, sans-serif" font-size="${baseFontSize}"
+                        text-anchor="middle" dominant-baseline="middle" fill="#000000"
+                        transform="${transform}">${text[j]}</text>`;
                     
-                    // Main letter
-                    svgContent += `<text 
-                        x="${adjustedX}" 
-                        y="${ly}" 
-                        font-family="Staatliches, Impact, sans-serif"
-                        font-size="${baseFontSize}"
-                        text-anchor="middle" 
-                        dominant-baseline="middle"
-                        fill="#ffffff"
-                        stroke="#000000"
-                        stroke-width="1.5"
-                        paint-order="stroke fill"
-                        transform="${transform}"
-                    >${text[j]}</text>`;
+                    // Letter
+                    svgContent += `<text x="${adjustedX}" y="${ly}" 
+                        font-family="Staatliches, Impact, sans-serif" font-size="${baseFontSize}"
+                        text-anchor="middle" dominant-baseline="middle" fill="#ffffff"
+                        stroke="#000000" stroke-width="1.5" paint-order="stroke fill"
+                        transform="${transform}">${text[j]}</text>`;
                 }
             }
             
@@ -499,7 +537,7 @@
         function updateList() {
             const list = document.getElementById('options-list');
             list.innerHTML = '';
-            document.getElementById('option-count').innerText = `${dinnerOptions.length} OPTIONS`;
+            document.getElementById('option-count').innerText = `${dinnerOptions.length} DELICIOUS CHOICES`;
             
             dinnerOptions.forEach((opt, i) => {
                 const div = document.createElement('div');
@@ -507,7 +545,7 @@
                 const color = wheelColors[i] ? wheelColors[i].bg : '#888';
                 div.innerHTML = `
                     <span><div class="color-dot" style="background:${color}"></div>${opt.toUpperCase()}</span>
-                    <button class="delete-btn" onclick="removeItem(${i})">X</button>
+                    <button class="delete-btn" onclick="removeItem(${i})">✕</button>
                 `;
                 list.appendChild(div);
             });
@@ -535,14 +573,15 @@
             isSpinning = true;
             resultDiv.style.display = 'none';
             
-            updateVanna('watching');
+            setVannaState('watching');
             
             const n = dinnerOptions.length;
             const sliceAngle = 360 / n;
             const winnerIndex = Math.floor(Math.random() * n);
             
             const targetRotation = 360 - (winnerIndex * sliceAngle + sliceAngle / 2);
-            const extraSpins = 360 * (5 + Math.floor(Math.random() * 5));
+            // More spins for longer duration!
+            const extraSpins = 360 * (8 + Math.floor(Math.random() * 6));
             const totalRotation = currentRotation + extraSpins + (targetRotation - (currentRotation % 360));
             
             const finalRotation = totalRotation > currentRotation ? totalRotation : totalRotation + 360;
@@ -550,17 +589,17 @@
             
             wheel.style.transform = `rotate(${finalRotation}deg)`;
             
+            // Longer timeout to match 8 second spin
             setTimeout(() => {
-                updateVanna('win');
-                
-                resultDiv.innerText = `DINNER: ${dinnerOptions[winnerIndex].toUpperCase()}!`;
+                setVannaState('win');
+                resultDiv.innerText = `TONIGHT: ${dinnerOptions[winnerIndex].toUpperCase()}!`;
                 resultDiv.style.display = 'block';
                 
                 setTimeout(() => {
-                    updateVanna('idle');
+                    setVannaState('idle');
                     isSpinning = false;
                 }, 4000);
-            }, 5000);
+            }, 8000);
         }
 
         document.getElementById('spinner').addEventListener('click', spin);
@@ -574,12 +613,9 @@
         });
         
         document.getElementById('new-option').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                document.getElementById('add-btn').click();
-            }
+            if (e.key === 'Enter') document.getElementById('add-btn').click();
         });
 
-        // Init
         const saved = localStorage.getItem('vannaBiteOptions');
         if (saved) dinnerOptions = JSON.parse(saved);
         refresh();
