@@ -42,47 +42,44 @@
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            gap: 0px;
+            gap: 10px;
             flex-shrink: 0;
+            height: 300px;
         }
         
         .host {
-            width: 200px;
-            height: 280px;
             background-size: 200% 200%;
+            background-repeat: no-repeat;
             image-rendering: auto;
         }
         
-        /* 
-        VANNA SPRITE POSITIONS:
-        Top-left (0% 0%): Profile/watching wheel
-        Top-right (100% 0%): Idle, facing forward
-        Bottom-left (0% 100%): Arms up, eyes CLOSED 
-        Bottom-right (100% 100%): Arms up, eyes OPEN
-        */
-        .vanna {
-            background-image: url('vanna_white_animation_sheet.png');
+        /* Pat - slightly smaller to crop out borders */
+        .pat {
+            width: 180px;
+            height: 260px;
+            background-image: url('pat_sajack_animation_sheet.png');
+            background-size: 202% 202%;
         }
         
+        /* Pat positions - adjusted for tighter crop */
+        .pat.idle { background-position: 1% 1%; }
+        .pat.watching { background-position: 99% 1%; }
+        .pat.talking-open { background-position: 1% 99%; }
+        .pat.talking-closed { background-position: 99% 99%; }
+        
+        /* Vanna */
+        .vanna {
+            width: 160px;
+            height: 260px;
+            background-image: url('vanna_white_animation_sheet.png');
+            background-size: 200% 200%;
+        }
+        
+        /* Vanna positions */
         .vanna.idle { background-position: 100% 0%; }
         .vanna.watching { background-position: 0% 0%; }
-        .vanna.celebrating { background-position: 100% 100%; } /* Arms up, eyes open - NO BLINK */
-        
-        /* 
-        PAT SPRITE POSITIONS:
-        Top-left (0% 0%): Idle, facing forward
-        Top-right (100% 0%): Profile/watching wheel
-        Bottom-left (0% 100%): Arms up, mouth OPEN
-        Bottom-right (100% 100%): Arms up, mouth CLOSED
-        */
-        .pat {
-            background-image: url('pat_sajack_animation_sheet.png');
-        }
-        
-        .pat.idle { background-position: 0% 0%; }
-        .pat.watching { background-position: 100% 0%; }
-        .pat.talking-open { background-position: 0% 100%; }
-        .pat.talking-closed { background-position: 100% 100%; }
+        .vanna.talking-closed { background-position: 0% 100%; }  /* eyes closed */
+        .vanna.talking-open { background-position: 100% 100%; }  /* eyes open */
         
         .wheel-container { 
             position: relative; 
@@ -399,8 +396,10 @@
         
         @media (max-width: 950px) {
             .game-area { flex-direction: column; }
-            .hosts-container { order: -1; }
-            .host { width: 140px; height: 200px; }
+            .hosts-container { order: -1; height: 220px; }
+            .host { height: 200px; }
+            .pat { width: 140px; }
+            .vanna { width: 120px; }
             .wheel-container { width: 380px; height: 380px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
             h1 { font-size: 2.8rem; }
@@ -503,13 +502,11 @@
         const vanna = document.getElementById('vanna');
         
         function setHostsState(state) {
-            // Clear any existing talking animation
             if (talkingInterval) {
                 clearInterval(talkingInterval);
                 talkingInterval = null;
             }
             
-            // Remove all state classes
             pat.className = 'host pat';
             vanna.className = 'host vanna';
             
@@ -517,14 +514,11 @@
                 pat.classList.add('watching');
                 vanna.classList.add('watching');
             } else if (state === 'celebrating') {
-                // Vanna: arms up, eyes open (no blinking)
-                vanna.classList.add('celebrating');
-                
-                // Pat: South Park mouth flap animation
+                // BOTH do the South Park mouth flap!
                 let mouthOpen = true;
-                pat.classList.add('talking-open');
                 talkingInterval = setInterval(() => {
                     pat.className = 'host pat ' + (mouthOpen ? 'talking-open' : 'talking-closed');
+                    vanna.className = 'host vanna ' + (mouthOpen ? 'talking-open' : 'talking-closed');
                     mouthOpen = !mouthOpen;
                 }, 120);
             } else {
