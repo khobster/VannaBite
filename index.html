@@ -46,24 +46,23 @@
             flex-shrink: 0;
         }
         
-        /* Container clips to show one frame */
+        /* Container clips to show one frame - SAME HEIGHT for ground alignment */
         .host-container {
             overflow: hidden;
+            height: 200px;
         }
         
-        /* Pat's container - sized to show one frame of his sprite */
+        /* Pat's container */
         .pat-container {
-            width: 150px;
-            height: 220px;
+            width: 140px;
         }
         
-        /* Vanna's container - sized to show one frame of her sprite */
+        /* Vanna's container - more stout proportions */
         .vanna-container {
-            width: 130px;
-            height: 250px;
+            width: 120px;
         }
         
-        /* The sprite itself is 2x the container size */
+        /* The sprite is 2x container, we translate to show quadrants */
         .host {
             width: 200%;
             height: 200%;
@@ -75,21 +74,21 @@
             background-image: url('pat_sajack_animation_sheet.png');
         }
         
-        /* Pat frames: top-left=idle, top-right=watching, bottom-left=talk-open, bottom-right=talk-closed */
-        .pat.idle { transform: translate(0%, 0%); }
-        .pat.watching { transform: translate(-50%, 0%); }
-        .pat.talk-open { transform: translate(0%, -50%); }
-        .pat.talk-closed { transform: translate(-50%, -50%); }
+        /* Pat frames - shifted inward to crop borders */
+        .pat.idle { transform: translate(-2%, -2%); }
+        .pat.watching { transform: translate(-52%, -2%); }
+        .pat.talk-open { transform: translate(-2%, -52%); }
+        .pat.talk-closed { transform: translate(-52%, -52%); }
         
         .vanna {
             background-image: url('vanna_white_animation_sheet.png');
         }
         
-        /* Vanna frames: top-left=watching, top-right=idle, bottom-left=eyes-closed, bottom-right=arms-up */
-        .vanna.idle { transform: translate(-50%, 0%); }
-        .vanna.watching { transform: translate(0%, 0%); }
-        .vanna.celebrate-down { transform: translate(-50%, 0%); }  /* arms down = idle frame */
-        .vanna.celebrate-up { transform: translate(-50%, -50%); }  /* arms up, eyes open */
+        /* Vanna frames - both bottom frames have arms UP, so body stays still */
+        .vanna.idle { transform: translate(-50%, 0%); }           /* top-right: arms down, facing forward */
+        .vanna.watching { transform: translate(0%, 0%); }          /* top-left: profile */
+        .vanna.talk-open { transform: translate(-50%, -50%); }     /* bottom-right: arms up, eyes OPEN */
+        .vanna.talk-closed { transform: translate(0%, -50%); }     /* bottom-left: arms up, eyes CLOSED */
         
         .wheel-container { 
             position: relative; 
@@ -407,8 +406,9 @@
         @media (max-width: 950px) {
             .game-area { flex-direction: column; align-items: center; }
             .hosts-container { order: -1; }
-            .pat-container { width: 110px; height: 160px; }
-            .vanna-container { width: 95px; height: 185px; }
+            .host-container { height: 150px; }
+            .pat-container { width: 105px; }
+            .vanna-container { width: 90px; }
             .wheel-container { width: 380px; height: 380px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
             h1 { font-size: 2.8rem; }
@@ -524,12 +524,14 @@
                 pat.className = 'host pat watching';
                 vanna.className = 'host vanna watching';
             } else if (state === 'celebrating') {
+                // BOTH do South Park head flap - body stays still!
                 let toggle = true;
                 talkingInterval = setInterval(() => {
-                    // Pat: mouth flap
+                    // Pat: toggles between bottom-left (mouth open) and bottom-right (mouth closed)
                     pat.className = 'host pat ' + (toggle ? 'talk-open' : 'talk-closed');
-                    // Vanna: arms down/up with head pop
-                    vanna.className = 'host vanna ' + (toggle ? 'celebrate-up' : 'celebrate-down');
+                    // Vanna: toggles between bottom-right (eyes open) and bottom-left (eyes closed)
+                    // Both frames have arms UP so body stays still, just head flaps
+                    vanna.className = 'host vanna ' + (toggle ? 'talk-open' : 'talk-closed');
                     toggle = !toggle;
                 }, 150);
             } else {
