@@ -37,29 +37,43 @@
         .container { display: flex; flex-direction: column; align-items: center; max-width: 1200px; width: 100%; }
         .game-area { display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%; }
         
-        .vanna-container { 
-            width: 420px; 
-            height: 580px; 
-            flex-shrink: 0;
+        /* === PAT & VANNA HOSTS === */
+        .hosts-container {
             display: flex;
             align-items: flex-end;
             justify-content: center;
-        }
-
-        #vanna-img {
-            height: 100%;
-            max-width: 100%;
-            object-fit: contain;
+            gap: 0px;
+            flex-shrink: 0;
         }
         
-        .vanna-winning #vanna-img { 
-            animation: bounce 0.4s ease-in-out infinite; 
+        .host {
+            width: 200px;
+            height: 280px;
+            background-size: 200% 200%;
+            image-rendering: auto;
         }
         
-        @keyframes bounce { 
-            0%, 100% { transform: translateY(0); } 
-            50% { transform: translateY(-20px); } 
+        /* Vanna sprite positions */
+        .vanna {
+            background-image: url('vanna_white_animation_sheet.png');
         }
+        
+        /* Vanna: top-left = looking/watching, top-right = idle, bottom-left = mouth closed, bottom-right = mouth open */
+        .vanna.idle { background-position: 100% 0%; }
+        .vanna.watching { background-position: 0% 0%; }
+        .vanna.talking-open { background-position: 100% 100%; }
+        .vanna.talking-closed { background-position: 0% 100%; }
+        
+        /* Pat sprite positions */
+        .pat {
+            background-image: url('pat_sajack_animation_sheet.png');
+        }
+        
+        /* Pat: top-left = idle, top-right = watching, bottom-left = mouth open, bottom-right = mouth closed */
+        .pat.idle { background-position: 0% 0%; }
+        .pat.watching { background-position: 100% 0%; }
+        .pat.talking-open { background-position: 0% 100%; }
+        .pat.talking-closed { background-position: 100% 100%; }
         
         .wheel-container { 
             position: relative; 
@@ -183,9 +197,7 @@
             margin-bottom: 6px;
         }
         
-        .board-row:last-child {
-            margin-bottom: 0;
-        }
+        .board-row:last-child { margin-bottom: 0; }
         
         .tile-container {
             width: 42px;
@@ -378,7 +390,8 @@
         
         @media (max-width: 950px) {
             .game-area { flex-direction: column; }
-            .vanna-container { width: 300px; height: 420px; }
+            .hosts-container { order: -1; }
+            .host { width: 140px; height: 200px; }
             .wheel-container { width: 380px; height: 380px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
             h1 { font-size: 2.8rem; }
@@ -392,8 +405,9 @@
         <h1>VANNA BITE</h1>
         
         <div class="game-area">
-            <div class="vanna-container" id="vanna-container">
-                <img id="vanna-img" src="vanna_bite_idle.png" alt="Vanna">
+            <div class="hosts-container">
+                <div class="host pat idle" id="pat"></div>
+                <div class="host vanna idle" id="vanna"></div>
             </div>
             
             <div class="wheel-container">
@@ -404,7 +418,6 @@
             </div>
         </div>
         
-        <!-- Full board with 3 rows -->
         <div class="result-board-container">
             <div class="result-board">
                 <div class="board-row" id="row-0"></div>
@@ -435,8 +448,8 @@
         let dinnerOptions = ["PIZZA", "TACOS", "PASTA", "BURGERS", "CHINESE", "SUSHI", "BBQ", "SALAD"];
         let wheelColors = [];
         let blackSliceIndex = 0;
+        let talkingInterval = null;
 
-        // Build the board
         function buildBoard() {
             for (let r = 0; r < 3; r++) {
                 const row = document.getElementById(`row-${r}`);
@@ -477,19 +490,34 @@
         }
         
         const wheel = document.getElementById('wheel');
-        const vannaContainer = document.getElementById('vanna-container');
-        const vannaImg = document.getElementById('vanna-img');
+        const pat = document.getElementById('pat');
+        const vanna = document.getElementById('vanna');
         
-        function setVanna(state) {
-            vannaContainer.className = 'vanna-container';
+        function setHostsState(state) {
+            // Clear any existing talking animation
+            if (talkingInterval) {
+                clearInterval(talkingInterval);
+                talkingInterval = null;
+            }
             
-            if (state === 'win') {
-                vannaContainer.className = 'vanna-container vanna-winning';
-                vannaImg.src = 'vanna_bite_winning.png';
-            } else if (state === 'watching') {
-                vannaImg.src = 'vanna_bite_watching.png';
+            // Remove all state classes
+            pat.className = 'host pat';
+            vanna.className = 'host vanna';
+            
+            if (state === 'watching') {
+                pat.classList.add('watching');
+                vanna.classList.add('watching');
+            } else if (state === 'talking') {
+                // South Park Canadian mouth flap animation
+                let mouthOpen = true;
+                talkingInterval = setInterval(() => {
+                    pat.className = 'host pat ' + (mouthOpen ? 'talking-open' : 'talking-closed');
+                    vanna.className = 'host vanna ' + (mouthOpen ? 'talking-open' : 'talking-closed');
+                    mouthOpen = !mouthOpen;
+                }, 120); // Fast flapping
             } else {
-                vannaImg.src = 'vanna_bite_idle.png';
+                pat.classList.add('idle');
+                vanna.classList.add('idle');
             }
         }
         
@@ -504,19 +532,13 @@
         function revealAnswer(text) {
             const letters = text.toUpperCase();
             const len = letters.length;
-            
-            // Center the word in the middle row (row 1)
             const middleRow = 1;
             const startCol = Math.floor((TILES_PER_ROW - len) / 2);
-            
-            // Get all tiles
             const allTiles = document.querySelectorAll('.tile-container');
             
-            // Find the tiles to reveal and stagger them
             let revealIndex = 0;
             letters.split('').forEach((letter, i) => {
                 const col = startCol + i;
-                // Find the tile at row 1, col
                 allTiles.forEach(tile => {
                     if (parseInt(tile.dataset.row) === middleRow && parseInt(tile.dataset.col) === col) {
                         tile.querySelector('.tile-back').textContent = letter;
@@ -617,7 +639,7 @@
             isSpinning = true;
             
             resetBoard();
-            setVanna('watching');
+            setHostsState('watching');
             
             const n = dinnerOptions.length;
             const sliceAngle = 360 / n;
@@ -631,9 +653,9 @@
             wheel.style.transform = `rotate(${finalRotation}deg)`;
             
             setTimeout(() => {
-                setVanna('win');
+                setHostsState('talking');
                 revealAnswer(dinnerOptions[winnerIndex]);
-                setTimeout(() => { setVanna('idle'); isSpinning = false; }, 4000);
+                setTimeout(() => { setHostsState('idle'); isSpinning = false; }, 4000);
             }, 8000);
         }
 
