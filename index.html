@@ -53,23 +53,32 @@
             image-rendering: auto;
         }
         
-        /* Vanna sprite positions */
+        /* 
+        VANNA SPRITE POSITIONS:
+        Top-left (0% 0%): Profile/watching wheel
+        Top-right (100% 0%): Idle, facing forward
+        Bottom-left (0% 100%): Arms up, eyes CLOSED 
+        Bottom-right (100% 100%): Arms up, eyes OPEN
+        */
         .vanna {
             background-image: url('vanna_white_animation_sheet.png');
         }
         
-        /* Vanna: top-left = looking/watching, top-right = idle, bottom-left = mouth closed, bottom-right = mouth open */
         .vanna.idle { background-position: 100% 0%; }
         .vanna.watching { background-position: 0% 0%; }
-        .vanna.talking-open { background-position: 100% 100%; }
-        .vanna.talking-closed { background-position: 0% 100%; }
+        .vanna.celebrating { background-position: 100% 100%; } /* Arms up, eyes open - NO BLINK */
         
-        /* Pat sprite positions */
+        /* 
+        PAT SPRITE POSITIONS:
+        Top-left (0% 0%): Idle, facing forward
+        Top-right (100% 0%): Profile/watching wheel
+        Bottom-left (0% 100%): Arms up, mouth OPEN
+        Bottom-right (100% 100%): Arms up, mouth CLOSED
+        */
         .pat {
             background-image: url('pat_sajack_animation_sheet.png');
         }
         
-        /* Pat: top-left = idle, top-right = watching, bottom-left = mouth open, bottom-right = mouth closed */
         .pat.idle { background-position: 0% 0%; }
         .pat.watching { background-position: 100% 0%; }
         .pat.talking-open { background-position: 0% 100%; }
@@ -507,14 +516,17 @@
             if (state === 'watching') {
                 pat.classList.add('watching');
                 vanna.classList.add('watching');
-            } else if (state === 'talking') {
-                // South Park Canadian mouth flap animation
+            } else if (state === 'celebrating') {
+                // Vanna: arms up, eyes open (no blinking)
+                vanna.classList.add('celebrating');
+                
+                // Pat: South Park mouth flap animation
                 let mouthOpen = true;
+                pat.classList.add('talking-open');
                 talkingInterval = setInterval(() => {
                     pat.className = 'host pat ' + (mouthOpen ? 'talking-open' : 'talking-closed');
-                    vanna.className = 'host vanna ' + (mouthOpen ? 'talking-open' : 'talking-closed');
                     mouthOpen = !mouthOpen;
-                }, 120); // Fast flapping
+                }, 120);
             } else {
                 pat.classList.add('idle');
                 vanna.classList.add('idle');
@@ -653,7 +665,7 @@
             wheel.style.transform = `rotate(${finalRotation}deg)`;
             
             setTimeout(() => {
-                setHostsState('talking');
+                setHostsState('celebrating');
                 revealAnswer(dinnerOptions[winnerIndex]);
                 setTimeout(() => { setHostsState('idle'); isSpinning = false; }, 4000);
             }, 8000);
