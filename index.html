@@ -54,12 +54,12 @@
         
         .host-wrapper.pat-wrapper {
             width: 160px;
-            height: 240px;
+            height: 260px;
         }
         
         .host-wrapper.vanna-wrapper {
             width: 140px;
-            height: 240px;
+            height: 280px;
         }
         
         .host {
@@ -71,9 +71,9 @@
         /* Pat - oversized and positioned to hide borders */
         .pat {
             width: 200px;
-            height: 300px;
+            height: 320px;
             left: -20px;
-            top: -20px;
+            bottom: -20px;
             background-image: url('pat_sajack_animation_sheet.png');
             background-size: 200% 200%;
         }
@@ -86,17 +86,22 @@
         /* Vanna */
         .vanna {
             width: 180px;
-            height: 300px;
+            height: 340px;
             left: -20px;
-            top: -20px;
+            bottom: -20px;
             background-image: url('vanna_white_animation_sheet.png');
             background-size: 200% 200%;
         }
         
+        /* Vanna positions:
+           top-right (100% 0%): idle, arms down, mouth closed
+           top-left (0% 0%): watching/profile
+           bottom-right (100% 100%): arms UP, mouth OPEN, eyes OPEN
+        */
         .vanna.idle { background-position: 100% 0%; }
         .vanna.watching { background-position: 0% 0%; }
-        /* Only eyes OPEN frame for celebrating - bottom-right */
-        .vanna.celebrating { background-position: 100% 100%; }
+        .vanna.celebrate-down { background-position: 100% 0%; }   /* arms down, mouth closed */
+        .vanna.celebrate-up { background-position: 100% 100%; }   /* arms UP, mouth open */
         
         .wheel-container { 
             position: relative; 
@@ -414,10 +419,10 @@
         @media (max-width: 950px) {
             .game-area { flex-direction: column; align-items: center; }
             .hosts-container { order: -1; }
-            .host-wrapper.pat-wrapper { width: 120px; height: 180px; }
-            .host-wrapper.vanna-wrapper { width: 105px; height: 180px; }
-            .pat { width: 150px; height: 225px; left: -15px; top: -15px; }
-            .vanna { width: 135px; height: 225px; left: -15px; top: -15px; }
+            .host-wrapper.pat-wrapper { width: 120px; height: 195px; }
+            .host-wrapper.vanna-wrapper { width: 105px; height: 210px; }
+            .pat { width: 150px; height: 240px; left: -15px; bottom: -15px; }
+            .vanna { width: 135px; height: 255px; left: -15px; bottom: -15px; }
             .wheel-container { width: 380px; height: 380px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
             h1 { font-size: 2.8rem; }
@@ -536,16 +541,15 @@
                 pat.classList.add('watching');
                 vanna.classList.add('watching');
             } else if (state === 'celebrating') {
-                // Vanna: arms up, eyes open - static, NO blinking
-                vanna.classList.add('celebrating');
-                
-                // Pat: South Park mouth flap
-                let mouthOpen = true;
-                pat.classList.add('talking-open');
+                // Both do South Park style animation!
+                let toggle = true;
                 talkingInterval = setInterval(() => {
-                    pat.className = 'host pat ' + (mouthOpen ? 'talking-open' : 'talking-closed');
-                    mouthOpen = !mouthOpen;
-                }, 120);
+                    // Pat: mouth open/closed
+                    pat.className = 'host pat ' + (toggle ? 'talking-open' : 'talking-closed');
+                    // Vanna: arms down (mouth closed) / arms up (mouth open) - HEAD POP!
+                    vanna.className = 'host vanna ' + (toggle ? 'celebrate-up' : 'celebrate-down');
+                    toggle = !toggle;
+                }, 150);
             } else {
                 pat.classList.add('idle');
                 vanna.classList.add('idle');
