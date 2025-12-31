@@ -46,62 +46,24 @@
             flex-shrink: 0;
         }
         
-        /* Wrapper clips the sprite borders */
-        .host-wrapper {
-            overflow: hidden;
+        /* Use <img> elements for proper aspect ratio preservation */
+        .host-sprite {
+            height: 280px;
+            width: auto;
+            object-fit: contain;
+            clip-path: inset(2% 2% 2% 2%); /* Clip borders without distortion */
+        }
+        
+        .host-container {
             position: relative;
-        }
-        
-        .host-wrapper.pat-wrapper {
-            width: 160px;
-            height: 260px;
-        }
-        
-        .host-wrapper.vanna-wrapper {
-            width: 140px;
             height: 280px;
         }
         
-        .host {
-            position: absolute;
-            background-repeat: no-repeat;
+        /* Hide the actual images, we'll use them for sizing reference */
+        .sprite-frame {
+            height: 280px;
             image-rendering: auto;
         }
-        
-        /* Pat - oversized and positioned to hide borders */
-        .pat {
-            width: 200px;
-            height: 320px;
-            left: -20px;
-            bottom: -20px;
-            background-image: url('pat_sajack_animation_sheet.png');
-            background-size: 200% 200%;
-        }
-        
-        .pat.idle { background-position: 0% 0%; }
-        .pat.watching { background-position: 100% 0%; }
-        .pat.talking-open { background-position: 0% 100%; }
-        .pat.talking-closed { background-position: 100% 100%; }
-        
-        /* Vanna */
-        .vanna {
-            width: 180px;
-            height: 340px;
-            left: -20px;
-            bottom: -20px;
-            background-image: url('vanna_white_animation_sheet.png');
-            background-size: 200% 200%;
-        }
-        
-        /* Vanna positions:
-           top-right (100% 0%): idle, arms down, mouth closed
-           top-left (0% 0%): watching/profile
-           bottom-right (100% 100%): arms UP, mouth OPEN, eyes OPEN
-        */
-        .vanna.idle { background-position: 100% 0%; }
-        .vanna.watching { background-position: 0% 0%; }
-        .vanna.celebrate-down { background-position: 100% 0%; }   /* arms down, mouth closed */
-        .vanna.celebrate-up { background-position: 100% 100%; }   /* arms UP, mouth open */
         
         .wheel-container { 
             position: relative; 
@@ -419,10 +381,8 @@
         @media (max-width: 950px) {
             .game-area { flex-direction: column; align-items: center; }
             .hosts-container { order: -1; }
-            .host-wrapper.pat-wrapper { width: 120px; height: 195px; }
-            .host-wrapper.vanna-wrapper { width: 105px; height: 210px; }
-            .pat { width: 150px; height: 240px; left: -15px; bottom: -15px; }
-            .vanna { width: 135px; height: 255px; left: -15px; bottom: -15px; }
+            .host-container { height: 200px; }
+            .sprite-frame { height: 200px; }
             .wheel-container { width: 380px; height: 380px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
             h1 { font-size: 2.8rem; }
@@ -437,11 +397,11 @@
         
         <div class="game-area">
             <div class="hosts-container">
-                <div class="host-wrapper pat-wrapper">
-                    <div class="host pat idle" id="pat"></div>
+                <div class="host-container">
+                    <img id="pat" class="sprite-frame" src="pat_sajack_animation_sheet.png" alt="Pat">
                 </div>
-                <div class="host-wrapper vanna-wrapper">
-                    <div class="host vanna idle" id="vanna"></div>
+                <div class="host-container">
+                    <img id="vanna" class="sprite-frame" src="vanna_white_animation_sheet.png" alt="Vanna">
                 </div>
             </div>
             
@@ -484,6 +444,22 @@
         let wheelColors = [];
         let blackSliceIndex = 0;
         let talkingInterval = null;
+
+        // Sprite frame positions (using object-position to show quadrants)
+        // Format: "X% Y%" where each quadrant is 50% of the image
+        const PAT_FRAMES = {
+            idle: '0% 0%',           // top-left
+            watching: '100% 0%',     // top-right  
+            talkOpen: '0% 100%',     // bottom-left (mouth open)
+            talkClosed: '100% 100%'  // bottom-right (mouth closed)
+        };
+        
+        const VANNA_FRAMES = {
+            idle: '100% 0%',         // top-right (arms down, facing forward)
+            watching: '0% 0%',       // top-left (profile)
+            celebrateDown: '100% 0%', // top-right (arms down, mouth closed)
+            celebrateUp: '100% 100%'  // bottom-right (arms UP, mouth open, eyes open)
+        };
 
         function buildBoard() {
             for (let r = 0; r < 3; r++) {
@@ -528,31 +504,36 @@
         const pat = document.getElementById('pat');
         const vanna = document.getElementById('vanna');
         
+        function setFrame(img, position) {
+            img.style.objectFit = 'none';
+            img.style.objectPosition = position;
+            // Show only 50% of width and height (one quadrant)
+            img.style.width = '200%';
+            img.style.height = '200%';
+            img.style.maxWidth = 'none';
+        }
+        
         function setHostsState(state) {
             if (talkingInterval) {
                 clearInterval(talkingInterval);
                 talkingInterval = null;
             }
             
-            pat.className = 'host pat';
-            vanna.className = 'host vanna';
-            
             if (state === 'watching') {
-                pat.classList.add('watching');
-                vanna.classList.add('watching');
+                setFrame(pat, PAT_FRAMES.watching);
+                setFrame(vanna, VANNA_FRAMES.watching);
             } else if (state === 'celebrating') {
-                // Both do South Park style animation!
                 let toggle = true;
                 talkingInterval = setInterval(() => {
-                    // Pat: mouth open/closed
-                    pat.className = 'host pat ' + (toggle ? 'talking-open' : 'talking-closed');
-                    // Vanna: arms down (mouth closed) / arms up (mouth open) - HEAD POP!
-                    vanna.className = 'host vanna ' + (toggle ? 'celebrate-up' : 'celebrate-down');
+                    // Pat: mouth flap
+                    setFrame(pat, toggle ? PAT_FRAMES.talkOpen : PAT_FRAMES.talkClosed);
+                    // Vanna: arms down/up with head pop
+                    setFrame(vanna, toggle ? VANNA_FRAMES.celebrateUp : VANNA_FRAMES.celebrateDown);
                     toggle = !toggle;
                 }, 150);
             } else {
-                pat.classList.add('idle');
-                vanna.classList.add('idle');
+                setFrame(pat, PAT_FRAMES.idle);
+                setFrame(vanna, VANNA_FRAMES.idle);
             }
         }
         
@@ -705,10 +686,14 @@
         });
         document.getElementById('new-option').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('add-btn').click(); });
 
+        // Initialize
         const saved = localStorage.getItem('vannaBiteOptions');
         if (saved) dinnerOptions = JSON.parse(saved);
         buildBoard();
         refresh();
+        
+        // Set initial frames
+        setHostsState('idle');
     </script>
 </body>
 </html>
