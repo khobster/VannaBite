@@ -40,7 +40,6 @@
         
         .game-area { 
             display: flex; 
-            /* Flex-end aligns their feet perfectly */
             align-items: flex-end; 
             justify-content: center; 
             width: 100%; 
@@ -53,55 +52,54 @@
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            gap: 15px;
+            gap: 20px; /* Nice spacing between them */
             flex-shrink: 0;
-            /* Increased space from wheel so Vanna isn't crowding it */
-            margin-right: 60px; 
+            margin-right: 60px; /* Distance from wheel */
             z-index: 5;
         }
         
         .host {
             background-repeat: no-repeat;
-            /* ZOOM TO HIDE BORDERS: 
-               215% zooms in past the black grid lines. 
-               We then use offset positions to center the character.
-            */
-            background-size: 215% 215%;
-            
-            /* No transition ensures crisp "pop" animation like South Park */
+            /* CRITICAL FIX: EXACT 200% prevents shaking and misalignment */
+            background-size: 200% 200%;
+            /* No transition = instant snap between frames */
             transition: none; 
         }
         
-        /* Pat - STOUTER DIMENSIONS */
+        /* Pat 
+           Filename: pat_sajack_animation_sheet.jpg (Fixed extension)
+           Size: Wider and Shorter to fix "elongated" look.
+        */
         .pat {
-            width: 240px;  /* Wider */
-            height: 300px; /* Shorter to prevent elongation */
+            width: 230px; 
+            height: 280px; 
             background-image: url('pat_sajack_animation_sheet.jpg');
+            /* Centering the background helps crop borders evenly */
+            background-position: center; 
         }
         
-        /* Pat Sprite Logic (Zoomed offsets) 
-           TL: 15% 10%
-           TR: 85% 10%
-           BL: 15% 90%
-           BR: 85% 90%
-        */
-        .pat.idle { background-position: 15% 10%; }
-        .pat.watching { background-position: 85% 10%; }
-        .pat.talk-closed { background-position: 15% 90%; }
-        .pat.talk-open { background-position: 85% 90%; }
+        /* Pat Logic: Exact corners (0% and 100%) */
+        .pat.idle { background-position: 0% 0%; }
+        .pat.watching { background-position: 100% 0%; }
+        .pat.talk-closed { background-position: 0% 100%; }
+        .pat.talk-open { background-position: 100% 100%; }
         
-        /* Vanna */
+        /* Vanna 
+           Filename: vanna_white_animation_sheet.png
+           Size: Adjusted to ensure head isn't cut off.
+        */
         .vanna {
-            width: 160px;
-            height: 380px;
+            width: 140px; 
+            height: 320px;
             background-image: url('vanna_white_animation_sheet.png');
         }
         
-        /* Vanna Sprite Logic (Zoomed offsets) */
-        .vanna.idle { background-position: 15% 10%; }
-        .vanna.watching { background-position: 85% 10%; }
-        .vanna.talk-closed { background-position: 15% 90%; }
-        .vanna.talk-open { background-position: 85% 90%; }
+        /* Vanna Logic: Exact corners */
+        .vanna.idle { background-position: 0% 0%; }
+        .vanna.watching { background-position: 100% 0%; }
+        /* Celebration frames (Bottom Row) */
+        .vanna.talk-closed { background-position: 0% 100%; }
+        .vanna.talk-open { background-position: 100% 100%; }
         
         .wheel-container { 
             position: relative; 
@@ -422,8 +420,8 @@
             .game-area { flex-direction: column; align-items: center; gap: 20px; }
             .hosts-container { order: -1; margin-right: 0; margin-bottom: 0; }
             /* Mobile sizes */
-            .pat { width: 180px; height: 230px; }
-            .vanna { width: 120px; height: 300px; }
+            .pat { width: 170px; height: 210px; }
+            .vanna { width: 100px; height: 240px; }
             .wheel-container { width: 380px; height: 380px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
             h1 { font-size: 2.8rem; }
@@ -535,7 +533,7 @@
                 pat.className = 'host pat watching';
                 vanna.className = 'host vanna watching';
             } else if (state === 'celebrating') {
-                // Celebration loop: Toggles between closed/head-down and open/head-popped
+                // Toggles ONLY the bottom two frames (Arms Up Closed vs Arms Up Open)
                 let toggle = true;
                 talkingInterval = setInterval(() => {
                     pat.className = 'host pat ' + (toggle ? 'talk-open' : 'talk-closed');
