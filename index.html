@@ -40,53 +40,45 @@
         /* === PAT & VANNA HOSTS === */
         .hosts-container {
             display: flex;
-            align-items: flex-end; /* Same floor */
+            align-items: flex-end;
             justify-content: center;
             gap: 10px;
             flex-shrink: 0;
         }
         
-        /* 
-         * To avoid warping: container aspect ratio must match sprite frame aspect ratio
-         * Pat's frames are roughly square-ish (he's stocky)
-         * Vanna's frames are taller (she's in a long gown)
-         * Using background-position to select quadrants, with inset values to crop borders
-         */
-        
         .host {
             background-repeat: no-repeat;
-            /* 200% means the full sprite is 2x the container, so we see 1/4 (one frame) */
             background-size: 200% 200%;
         }
         
-        /* Pat - stockier proportions */
+        /* Pat - BIG, stocky proportions */
         .pat {
-            width: 190px;
-            height: 280px;
+            width: 280px;
+            height: 400px;
             background-image: url('pat_sajack_animation_sheet.png');
         }
         
-        /* Pat frames using background-position (with 3% inset to crop borders):
+        /* Pat frames - 8% inset to crop borders hard
            top-left=idle, top-right=watching, bottom-left=talk-open, bottom-right=talk-closed */
-        .pat.idle { background-position: 3% 3%; }
-        .pat.watching { background-position: 97% 3%; }
-        .pat.talk-open { background-position: 3% 97%; }
-        .pat.talk-closed { background-position: 97% 97%; }
+        .pat.idle { background-position: 8% 8%; }
+        .pat.watching { background-position: 92% 8%; }
+        .pat.talk-open { background-position: 8% 92%; }
+        .pat.talk-closed { background-position: 92% 92%; }
         
-        /* Vanna - taller proportions (long gown) */
+        /* Vanna - BIG, taller proportions */
         .vanna {
-            width: 155px;
-            height: 310px;
+            width: 230px;
+            height: 460px;
             background-image: url('vanna_white_animation_sheet.png');
         }
         
-        /* Vanna frames (new sprite):
-           top-left=idle, top-right=arms down mouth open, 
+        /* Vanna frames - 8% inset to crop borders
+           top-left=watching (looking left), top-right=idle (forward)
            bottom-left=arms up mouth closed, bottom-right=arms up mouth open */
-        .vanna.idle { background-position: 3% 3%; }
-        .vanna.watching { background-position: 3% 3%; }
-        .vanna.talk-open { background-position: 97% 97%; }   /* bottom-right: arms up, mouth OPEN */
-        .vanna.talk-closed { background-position: 3% 97%; }  /* bottom-left: arms up, mouth CLOSED */
+        .vanna.idle { background-position: 92% 8%; }
+        .vanna.watching { background-position: 8% 8%; }
+        .vanna.talk-open { background-position: 92% 92%; }
+        .vanna.talk-closed { background-position: 8% 92%; }
         
         .wheel-container { 
             position: relative; 
@@ -404,8 +396,8 @@
         @media (max-width: 950px) {
             .game-area { flex-direction: column; align-items: center; }
             .hosts-container { order: -1; }
-            .pat { width: 130px; height: 190px; }
-            .vanna { width: 105px; height: 210px; }
+            .pat { width: 180px; height: 260px; }
+            .vanna { width: 150px; height: 300px; }
             .wheel-container { width: 380px; height: 380px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
             h1 { font-size: 2.8rem; }
