@@ -58,53 +58,61 @@
             z-index: 5;
         }
         
+        /* Wrapper clips the sprite to hide borders */
+        .host-wrapper {
+            overflow: hidden;
+            position: relative;
+        }
+        
         .host {
             background-repeat: no-repeat;
-            transition: none; 
-            background-color: rgba(255, 255, 255, 0.05); 
-            border-radius: 4px;
+            /* NO background-color - let it be transparent */
         }
         
-        /* === PAT (PIXEL-LOCK FIX) === */
+        /* === PAT === */
+        .pat-wrapper {
+            width: 220px;
+            height: 270px;
+        }
+        
         .pat {
-            /* 1. Set specific container size */
-            width: 230px; 
-            height: 280px; 
-            
+            width: 230px;
+            height: 280px;
             background-image: url('pat_sajack_animation_sheet.png');
-            
-            /* 2. Set background size to EXACTLY 2x width and 2x height in pixels.
-               230px * 2 = 460px width
-               280px * 2 = 560px height 
-               This ensures the grid is mathematically perfect. */
-            background-size: 460px 560px; 
+            /* Slightly larger than 2x to zoom in and hide borders */
+            background-size: 470px 570px;
+            /* Offset to center within the slightly-cropped wrapper */
+            position: relative;
+            left: -5px;
+            top: -5px;
         }
         
-        /* 3. Use Pixel Offsets instead of Percentages.
-           Top-Left: 0 0
-           Top-Right: -230px 0 (Shift left by exactly one width)
-           Bottom-Left: 0 -280px (Shift up by exactly one height)
-           Bottom-Right: -230px -280px
-        */
         .pat.idle { background-position: 0px 0px; }
-        .pat.watching { background-position: -230px 0px; }
-        .pat.talk-closed { background-position: 0px -280px; }
-        .pat.talk-open { background-position: -230px -280px; }
+        .pat.watching { background-position: -235px 0px; }
+        .pat.talk-closed { background-position: 0px -285px; }
+        .pat.talk-open { background-position: -235px -285px; }
         
-        /* === VANNA (PIXEL-LOCK FIX) === */
+        /* === VANNA === */
+        .vanna-wrapper {
+            width: 140px;
+            height: 320px;
+        }
+        
         .vanna {
-            width: 150px; 
+            width: 150px;
             height: 330px;
             background-image: url('vanna_white_animation_sheet.png');
-            
-            /* 150 * 2 = 300px width, 330 * 2 = 660px height */
-            background-size: 300px 660px; 
+            /* Slightly larger to zoom in and hide borders */
+            background-size: 310px 670px;
+            position: relative;
+            left: -5px;
+            top: -5px;
         }
         
         .vanna.idle { background-position: 0px 0px; }
-        .vanna.watching { background-position: -150px 0px; }
-        .vanna.talk-closed { background-position: 0px -330px; }
-        .vanna.talk-open { background-position: -150px -330px; }
+        .vanna.watching { background-position: -155px 0px; }
+        .vanna.talk-closed { background-position: 0px -335px; }
+        .vanna.talk-open { background-position: -155px -335px; }
         
         .wheel-container { 
             position: relative; 
@@ -424,16 +432,23 @@
         @media (max-width: 950px) {
             .game-area { flex-direction: column; align-items: center; gap: 20px; }
             .hosts-container { order: -1; margin-right: 0; margin-bottom: 0; }
-            /* Mobile sizes */
-            .pat { width: 170px; height: 210px; background-size: 340px 420px; }
-            .pat.watching { background-position: -170px 0px; }
-            .pat.talk-closed { background-position: 0px -210px; }
-            .pat.talk-open { background-position: -170px -210px; }
+            .pat-wrapper { width: 160px; height: 200px; }
+            .pat { 
+                width: 170px; height: 210px; 
+                background-size: 350px 430px; 
+            }
+            .pat.watching { background-position: -175px 0px; }
+            .pat.talk-closed { background-position: 0px -215px; }
+            .pat.talk-open { background-position: -175px -215px; }
             
-            .vanna { width: 100px; height: 240px; background-size: 200px 480px; }
-            .vanna.watching { background-position: -100px 0px; }
-            .vanna.talk-closed { background-position: 0px -240px; }
-            .vanna.talk-open { background-position: -100px -240px; }
+            .vanna-wrapper { width: 90px; height: 230px; }
+            .vanna { 
+                width: 100px; height: 240px; 
+                background-size: 210px 490px; 
+            }
+            .vanna.watching { background-position: -105px 0px; }
+            .vanna.talk-closed { background-position: 0px -245px; }
+            .vanna.talk-open { background-position: -105px -245px; }
             
             .wheel-container { width: 380px; height: 380px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
@@ -449,8 +464,12 @@
         
         <div class="game-area">
             <div class="hosts-container">
-                <div class="host pat idle" id="pat"></div>
-                <div class="host vanna idle" id="vanna"></div>
+                <div class="host-wrapper pat-wrapper">
+                    <div class="host pat idle" id="pat"></div>
+                </div>
+                <div class="host-wrapper vanna-wrapper">
+                    <div class="host vanna idle" id="vanna"></div>
+                </div>
             </div>
             
             <div class="wheel-container">
@@ -546,7 +565,8 @@
                 pat.className = 'host pat watching';
                 vanna.className = 'host vanna watching';
             } else if (state === 'celebrating') {
-                // Toggles between bottom-left and bottom-right
+                // Toggle between bottom-left (talk-closed) and bottom-right (talk-open)
+                // Both frames have arms up, only head/mouth changes
                 let toggle = true;
                 talkingInterval = setInterval(() => {
                     pat.className = 'host pat ' + (toggle ? 'talk-open' : 'talk-closed');
