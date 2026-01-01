@@ -52,52 +52,49 @@
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            gap: 20px; /* Nice spacing between them */
+            gap: 20px;
             flex-shrink: 0;
-            margin-right: 60px; /* Distance from wheel */
+            margin-right: 60px;
             z-index: 5;
         }
         
         .host {
             background-repeat: no-repeat;
-            /* CRITICAL FIX: EXACT 200% prevents shaking and misalignment */
+            /* Exact 200% ensures no shaking between frames */
             background-size: 200% 200%;
-            /* No transition = instant snap between frames */
-            transition: none; 
+            transition: none; /* Instant frame switching */
+            
+            /* Debug fallback: faint box if image still not found */
+            background-color: rgba(255, 255, 255, 0.05); 
+            border-radius: 4px;
         }
         
         /* Pat 
-           Filename: pat_sajack_animation_sheet.jpg (Fixed extension)
-           Size: Wider and Shorter to fix "elongated" look.
+           Updated filename: pat_sajack_animation.png 
         */
         .pat {
             width: 230px; 
             height: 280px; 
-            background-image: url('pat_sajack_animation_sheet.jpg');
-            /* Centering the background helps crop borders evenly */
-            background-position: center; 
+            background-image: url('pat_sajack_animation.png');
+            background-position: 0% 0%;
         }
         
-        /* Pat Logic: Exact corners (0% and 100%) */
+        /* Pat Logic */
         .pat.idle { background-position: 0% 0%; }
         .pat.watching { background-position: 100% 0%; }
         .pat.talk-closed { background-position: 0% 100%; }
         .pat.talk-open { background-position: 100% 100%; }
         
-        /* Vanna 
-           Filename: vanna_white_animation_sheet.png
-           Size: Adjusted to ensure head isn't cut off.
-        */
+        /* Vanna */
         .vanna {
-            width: 140px; 
-            height: 320px;
+            width: 150px; 
+            height: 330px;
             background-image: url('vanna_white_animation_sheet.png');
         }
         
-        /* Vanna Logic: Exact corners */
+        /* Vanna Logic */
         .vanna.idle { background-position: 0% 0%; }
         .vanna.watching { background-position: 100% 0%; }
-        /* Celebration frames (Bottom Row) */
         .vanna.talk-closed { background-position: 0% 100%; }
         .vanna.talk-open { background-position: 100% 100%; }
         
@@ -533,7 +530,7 @@
                 pat.className = 'host pat watching';
                 vanna.className = 'host vanna watching';
             } else if (state === 'celebrating') {
-                // Toggles ONLY the bottom two frames (Arms Up Closed vs Arms Up Open)
+                // Toggles between bottom-left (closed) and bottom-right (open/head-popped)
                 let toggle = true;
                 talkingInterval = setInterval(() => {
                     pat.className = 'host pat ' + (toggle ? 'talk-open' : 'talk-closed');
