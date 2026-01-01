@@ -20,7 +20,7 @@
             background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
             padding: 20px;
             color: white;
-            overflow-x: hidden; /* Prevent scroll on mobile if wheel is big */
+            overflow-x: hidden;
         }
         
         h1 {
@@ -38,12 +38,10 @@
         
         .container { display: flex; flex-direction: column; align-items: center; max-width: 1400px; width: 100%; }
         
-        /* Align items flex-end ensures feet are on the same ground plane */
         .game-area { 
             display: flex; 
             align-items: flex-end; 
             justify-content: center; 
-            gap: 0px; /* Reduced gap to bring hosts closer to wheel */
             width: 100%; 
             position: relative;
         }
@@ -51,56 +49,60 @@
         /* === PAT & VANNA HOSTS === */
         .hosts-container {
             display: flex;
-            align-items: flex-end; /* Ensures Pat and Vanna stand on same line */
+            align-items: flex-end;
             justify-content: center;
             gap: 10px;
             flex-shrink: 0;
-            margin-right: -40px; /* Slight overlap or tighten spacing to wheel */
-            margin-bottom: 20px; /* Aligns feet with the wheel visually */
+            /* MOVED FURTHER AWAY from the wheel */
+            margin-right: 40px; 
+            margin-bottom: 20px;
             z-index: 5;
         }
         
         .host {
             background-repeat: no-repeat;
-            /* TRICK TO REMOVE BORDERS: 
-               We set size to 204% instead of 200%. 
-               This zooms in slightly, cropping off the edges of the sprite sheet.
+            /* AGGRESSIVE CROP FIX:
+               Size set to 225% to zoom deep into the frame.
+               This pushes the borders/grid lines out of the visible area.
             */
-            background-size: 204% 204%;
-            transition: background-position 0.1s;
+            background-size: 225% 225%;
+            
+            /* ANIMATION FIX: 
+               Removed 'transition' property. 
+               This stops the "sliding" or "jumping" effect. 
+               Frames will now snap instantly. 
+            */
         }
         
-        /* Pat - Increased Size */
+        /* Pat */
         .pat {
             width: 260px;
             height: 380px;
             background-image: url('pat_sajack_animation_sheet.png');
         }
         
-        /* Pat Sprite logic (Using slight offsets to account for the zoom-crop) */
-        .pat.idle { background-position: 2% 2%; }
-        .pat.watching { background-position: 98% 2%; }
-        .pat.talk-open { background-position: 2% 98%; }
-        .pat.talk-closed { background-position: 98% 98%; }
+        /* POSITIONS (Using generic corners ensures centering with the zoom):
+           0% 0%     = Top Left
+           100% 0%   = Top Right
+           0% 100%   = Bottom Left
+           100% 100% = Bottom Right
+        */
+        .pat.idle { background-position: 0% 0%; }
+        .pat.watching { background-position: 100% 0%; }
+        .pat.talk-closed { background-position: 0% 100%; }
+        .pat.talk-open { background-position: 100% 100%; }
         
-        /* Vanna - Increased Size (Taller) */
+        /* Vanna */
         .vanna {
             width: 220px;
             height: 440px;
             background-image: url('vanna_white_animation_sheet.png');
         }
         
-        /* Vanna Sprite layout:
-           Row 1 (Top): Idle (L) | Watching/Head Turn (R)
-           Row 2 (Btm): Arms Up Closed (L) | Arms Up Open (R)
-        */
-        .vanna.idle { background-position: 2% 2%; }
-        
-        /* THIS IS THE FIX: TOP-RIGHT frame is the Head Turn */
-        .vanna.watching { background-position: 98% 2%; } 
-        
-        .vanna.talk-closed { background-position: 2% 98%; }
-        .vanna.talk-open { background-position: 98% 98%; }
+        .vanna.idle { background-position: 0% 0%; }
+        .vanna.watching { background-position: 100% 0%; }
+        .vanna.talk-closed { background-position: 0% 100%; }
+        .vanna.talk-open { background-position: 100% 100%; }
         
         .wheel-container { 
             position: relative; 
@@ -533,12 +535,12 @@
             
             if (state === 'watching') {
                 pat.className = 'host pat watching';
-                // This will now use the head-turn frame (top-right)
                 vanna.className = 'host vanna watching';
             } else if (state === 'celebrating') {
-                // Toggle between bottom two frames (arms up, mouth open/closed)
+                // Toggle between 'talk-closed' and 'talk-open' for the "Canadian head pop" effect
                 let toggle = true;
                 talkingInterval = setInterval(() => {
+                    // We only toggle the mouth/head frame, body stays hands-up
                     pat.className = 'host pat ' + (toggle ? 'talk-open' : 'talk-closed');
                     vanna.className = 'host vanna ' + (toggle ? 'talk-open' : 'talk-closed');
                     toggle = !toggle;
