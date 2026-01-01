@@ -20,76 +20,95 @@
             background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
             padding: 20px;
             color: white;
+            overflow-x: hidden; /* Prevent scroll on mobile if wheel is big */
         }
         
         h1 {
             font-family: 'Staatliches', cursive;
             color: #ffd700;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             text-align: center;
             font-size: 4rem;
             letter-spacing: 2px;
             text-shadow: 
                 4px 4px 0px #8b6914,
                 -1px -1px 0px #fff8dc;
+            z-index: 100;
         }
         
-        .container { display: flex; flex-direction: column; align-items: center; max-width: 1200px; width: 100%; }
-        .game-area { display: flex; align-items: flex-end; justify-content: center; gap: 20px; width: 100%; }
+        .container { display: flex; flex-direction: column; align-items: center; max-width: 1400px; width: 100%; }
+        
+        /* Align items flex-end ensures feet are on the same ground plane */
+        .game-area { 
+            display: flex; 
+            align-items: flex-end; 
+            justify-content: center; 
+            gap: 0px; /* Reduced gap to bring hosts closer to wheel */
+            width: 100%; 
+            position: relative;
+        }
         
         /* === PAT & VANNA HOSTS === */
         .hosts-container {
             display: flex;
-            align-items: flex-end;
+            align-items: flex-end; /* Ensures Pat and Vanna stand on same line */
             justify-content: center;
-            gap: 15px;
+            gap: 10px;
             flex-shrink: 0;
+            margin-right: -40px; /* Slight overlap or tighten spacing to wheel */
+            margin-bottom: 20px; /* Aligns feet with the wheel visually */
+            z-index: 5;
         }
         
         .host {
             background-repeat: no-repeat;
-            background-size: 200% 200%;
+            /* TRICK TO REMOVE BORDERS: 
+               We set size to 204% instead of 200%. 
+               This zooms in slightly, cropping off the edges of the sprite sheet.
+            */
+            background-size: 204% 204%;
+            transition: background-position 0.1s;
         }
         
-        /* Pat - big size */
+        /* Pat - Increased Size */
         .pat {
-            width: 220px;
-            height: 320px;
+            width: 260px;
+            height: 380px;
             background-image: url('pat_sajack_animation_sheet.png');
         }
         
-        /* Pat sprite layout:
-           top-left (0 0) = idle facing forward
-           top-right (100% 0) = watching/looking right
-           bottom-left (0 100%) = arms up, mouth OPEN
-           bottom-right (100% 100%) = arms up, mouth CLOSED */
-        .pat.idle { background-position: 0% 0%; }
-        .pat.watching { background-position: 100% 0%; }
-        .pat.talk-open { background-position: 0% 100%; }
-        .pat.talk-closed { background-position: 100% 100%; }
+        /* Pat Sprite logic (Using slight offsets to account for the zoom-crop) */
+        .pat.idle { background-position: 2% 2%; }
+        .pat.watching { background-position: 98% 2%; }
+        .pat.talk-open { background-position: 2% 98%; }
+        .pat.talk-closed { background-position: 98% 98%; }
         
-        /* Vanna - big size, taller */
+        /* Vanna - Increased Size (Taller) */
         .vanna {
-            width: 180px;
-            height: 360px;
+            width: 220px;
+            height: 440px;
             background-image: url('vanna_white_animation_sheet.png');
         }
         
-        /* Vanna sprite layout (from uploaded image):
-           top-left (0 0) = idle/watching (facing forward or slightly left)
-           top-right (100% 0) = facing forward, mouth open
-           bottom-left (0 100%) = arms UP, mouth CLOSED
-           bottom-right (100% 100%) = arms UP, mouth OPEN */
-        .vanna.idle { background-position: 0% 0%; }
-        .vanna.watching { background-position: 0% 0%; }
-        .vanna.talk-open { background-position: 100% 100%; }
-        .vanna.talk-closed { background-position: 0% 100%; }
+        /* Vanna Sprite layout:
+           Row 1 (Top): Idle (L) | Watching/Head Turn (R)
+           Row 2 (Btm): Arms Up Closed (L) | Arms Up Open (R)
+        */
+        .vanna.idle { background-position: 2% 2%; }
+        
+        /* THIS IS THE FIX: TOP-RIGHT frame is the Head Turn */
+        .vanna.watching { background-position: 98% 2%; } 
+        
+        .vanna.talk-closed { background-position: 2% 98%; }
+        .vanna.talk-open { background-position: 98% 98%; }
         
         .wheel-container { 
             position: relative; 
             width: 500px; 
             height: 500px; 
             margin: 20px 0; 
+            flex-shrink: 0;
+            z-index: 2;
         }
         
         .wheel-outer-rim {
@@ -171,8 +190,9 @@
         
         /* === WHEEL OF FORTUNE LETTER BOARD === */
         .result-board-container {
-            margin-top: 30px;
+            margin-top: 10px;
             perspective: 1000px;
+            z-index: 10;
         }
         
         .result-board {
@@ -399,10 +419,11 @@
         }
         
         @media (max-width: 950px) {
-            .game-area { flex-direction: column; align-items: center; }
-            .hosts-container { order: -1; }
-            .pat { width: 160px; height: 230px; }
-            .vanna { width: 130px; height: 260px; }
+            .game-area { flex-direction: column; align-items: center; gap: 20px; }
+            .hosts-container { order: -1; margin-right: 0; margin-bottom: 0; }
+            /* Mobile sizes */
+            .pat { width: 180px; height: 260px; }
+            .vanna { width: 150px; height: 300px; }
             .wheel-container { width: 380px; height: 380px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
             h1 { font-size: 2.8rem; }
@@ -512,6 +533,7 @@
             
             if (state === 'watching') {
                 pat.className = 'host pat watching';
+                // This will now use the head-turn frame (top-right)
                 vanna.className = 'host vanna watching';
             } else if (state === 'celebrating') {
                 // Toggle between bottom two frames (arms up, mouth open/closed)
