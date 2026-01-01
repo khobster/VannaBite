@@ -40,10 +40,12 @@
         
         .game-area { 
             display: flex; 
+            /* Flex-end aligns their feet perfectly */
             align-items: flex-end; 
             justify-content: center; 
             width: 100%; 
             position: relative;
+            margin-bottom: 20px;
         }
         
         /* === PAT & VANNA HOSTS === */
@@ -51,64 +53,60 @@
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             flex-shrink: 0;
-            /* MOVED FURTHER AWAY from the wheel */
-            margin-right: 40px; 
-            margin-bottom: 20px;
+            /* Increased space from wheel so Vanna isn't crowding it */
+            margin-right: 60px; 
             z-index: 5;
         }
         
         .host {
             background-repeat: no-repeat;
-            /* AGGRESSIVE CROP FIX:
-               Size set to 225% to zoom deep into the frame.
-               This pushes the borders/grid lines out of the visible area.
+            /* ZOOM TO HIDE BORDERS: 
+               215% zooms in past the black grid lines. 
+               We then use offset positions to center the character.
             */
-            background-size: 225% 225%;
+            background-size: 215% 215%;
             
-            /* ANIMATION FIX: 
-               Removed 'transition' property. 
-               This stops the "sliding" or "jumping" effect. 
-               Frames will now snap instantly. 
-            */
+            /* No transition ensures crisp "pop" animation like South Park */
+            transition: none; 
         }
         
-        /* Pat */
+        /* Pat - STOUTER DIMENSIONS */
         .pat {
-            width: 260px;
-            height: 380px;
-            background-image: url('pat_sajack_animation_sheet.png');
+            width: 240px;  /* Wider */
+            height: 300px; /* Shorter to prevent elongation */
+            background-image: url('pat_sajack_animation_sheet.jpg');
         }
         
-        /* POSITIONS (Using generic corners ensures centering with the zoom):
-           0% 0%     = Top Left
-           100% 0%   = Top Right
-           0% 100%   = Bottom Left
-           100% 100% = Bottom Right
+        /* Pat Sprite Logic (Zoomed offsets) 
+           TL: 15% 10%
+           TR: 85% 10%
+           BL: 15% 90%
+           BR: 85% 90%
         */
-        .pat.idle { background-position: 0% 0%; }
-        .pat.watching { background-position: 100% 0%; }
-        .pat.talk-closed { background-position: 0% 100%; }
-        .pat.talk-open { background-position: 100% 100%; }
+        .pat.idle { background-position: 15% 10%; }
+        .pat.watching { background-position: 85% 10%; }
+        .pat.talk-closed { background-position: 15% 90%; }
+        .pat.talk-open { background-position: 85% 90%; }
         
         /* Vanna */
         .vanna {
-            width: 220px;
-            height: 440px;
+            width: 160px;
+            height: 380px;
             background-image: url('vanna_white_animation_sheet.png');
         }
         
-        .vanna.idle { background-position: 0% 0%; }
-        .vanna.watching { background-position: 100% 0%; }
-        .vanna.talk-closed { background-position: 0% 100%; }
-        .vanna.talk-open { background-position: 100% 100%; }
+        /* Vanna Sprite Logic (Zoomed offsets) */
+        .vanna.idle { background-position: 15% 10%; }
+        .vanna.watching { background-position: 85% 10%; }
+        .vanna.talk-closed { background-position: 15% 90%; }
+        .vanna.talk-open { background-position: 85% 90%; }
         
         .wheel-container { 
             position: relative; 
             width: 500px; 
             height: 500px; 
-            margin: 20px 0; 
             flex-shrink: 0;
             z-index: 2;
         }
@@ -424,8 +422,8 @@
             .game-area { flex-direction: column; align-items: center; gap: 20px; }
             .hosts-container { order: -1; margin-right: 0; margin-bottom: 0; }
             /* Mobile sizes */
-            .pat { width: 180px; height: 260px; }
-            .vanna { width: 150px; height: 300px; }
+            .pat { width: 180px; height: 230px; }
+            .vanna { width: 120px; height: 300px; }
             .wheel-container { width: 380px; height: 380px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
             h1 { font-size: 2.8rem; }
@@ -537,10 +535,9 @@
                 pat.className = 'host pat watching';
                 vanna.className = 'host vanna watching';
             } else if (state === 'celebrating') {
-                // Toggle between 'talk-closed' and 'talk-open' for the "Canadian head pop" effect
+                // Celebration loop: Toggles between closed/head-down and open/head-popped
                 let toggle = true;
                 talkingInterval = setInterval(() => {
-                    // We only toggle the mouth/head frame, body stays hands-up
                     pat.className = 'host pat ' + (toggle ? 'talk-open' : 'talk-closed');
                     vanna.className = 'host vanna ' + (toggle ? 'talk-open' : 'talk-closed');
                     toggle = !toggle;
