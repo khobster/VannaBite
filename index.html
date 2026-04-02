@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VANNA BITE</title>
-    <link rel="icon" type="image/png" href="favicon.png?v=2">
+    <link rel="icon" type="image/png" href="favicon.png?v=3">
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Flex:opsz,wght@8..144,100..1000&family=Staatliches&display=swap');
@@ -94,8 +94,7 @@
         .pat {
             width: 230px;
             height: 280px;
-            /* CACHE BUSTER ADDED HERE */
-            background-image: url('pat_sajack_animation_sheet.png?v=2');
+            background-image: url('pat_sajack_animation_sheet.png');
             background-size: 470px 570px;
             position: relative;
             left: -5px;
@@ -447,16 +446,15 @@
             .hosts-container { order: -1; margin-right: 0; margin-bottom: 0; }
             .pat-wrapper { width: 160px; height: 200px; }
             
-            /* FORCE THE MOBILE SPRITE SHEET WITH CACHE BUSTER */
             .pat { 
                 width: 170px; height: 210px; 
-                background-image: url('pat_sajack_animation_sheet_mobile.png?v=2') !important; 
+                background-image: url('pat_sajack_animation_sheet_mobile.png?v=3') !important; 
                 background-size: 350px 430px !important; 
             }
             
-            /* All states now pull directly from the mobile sheet */
+            /* The Fix: Shift the 'watching' state to the right by 175px to hit the 2nd cell */
             .pat.idle { background-position: 0px 0px !important; } 
-            .pat.watching { background-position: 0px 0px !important; } 
+            .pat.watching { background-position: -175px 0px !important; } 
             .pat.talk-closed { background-position: 0px -215px !important; } 
             .pat.talk-open { background-position: -175px -215px !important; } 
             
