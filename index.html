@@ -11,6 +11,12 @@
         
         * { box-sizing: border-box; }
         
+        /* Added html and updated body to STRICTLY prevent side-to-side scrolling */
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+        
         body {
             font-family: 'Staatliches', cursive;
             display: flex;
@@ -23,7 +29,7 @@
             padding: 20px;
             padding-top: 40px;
             color: #333;
-            overflow-x: hidden;
+            position: relative;
         }
         
         h1 {
@@ -190,6 +196,9 @@
             margin-top: 10px;
             perspective: 1000px;
             z-index: 10;
+            width: 100%;
+            display: flex;
+            justify-content: center;
         }
         
         .result-board {
@@ -310,6 +319,7 @@
             color: #333;
             letter-spacing: 0.5px;
             transition: border-color 0.2s, background 0.2s;
+            width: 100%; /* prevents input from blowing out container */
         }
         
         input::placeholder { color: #a0a0a0; }
@@ -327,6 +337,7 @@
             font-weight: 800;
             letter-spacing: 1px;
             transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
         }
         
         button:hover { 
@@ -410,6 +421,7 @@
             border: 2px solid #fff;
             box-shadow: 0 0 0 1px #ccc;
             border-radius: 50%;
+            flex-shrink: 0;
         }
         
         .delete-btn { 
@@ -428,30 +440,31 @@
             color: #d32f2f;
         }
         
+        /* === MOBILE MEDIA QUERIES === */
         @media (max-width: 950px) {
             .game-area { flex-direction: column; align-items: center; gap: 20px; }
             .hosts-container { order: -1; margin-right: 0; margin-bottom: 0; }
             .pat-wrapper { width: 160px; height: 200px; }
             
-            /* SWAP TO MOBILE SPRITE SHEET */
+            /* SWAP TO MOBILE SPRITE SHEET WITH !IMPORTANT TO FORCE IT */
             .pat { 
                 width: 170px; height: 210px; 
-                background-image: url('pat_sajack_animation_sheet_mobile.png'); 
+                background-image: url('pat_sajack_animation_sheet_mobile.png') !important; 
                 background-size: 350px 430px; 
             }
             
-            /* Map to the new mobile sprite sheet coordinates */
-            .pat.idle { background-position: 0px 0px; } /* Top-Left: Gaze Down Idle */
-            .pat.watching { background-position: 0px 0px; } /* Top-Left: Gaze Down Idle */
+            /* Map to the new mobile sprite sheet coordinates (forced override) */
+            .pat.idle { background-position: 0px 0px !important; } 
+            .pat.watching { background-position: 0px 0px !important; } 
+            .pat.talk-closed { background-position: 0px -215px !important; } 
+            .pat.talk-open { background-position: -175px -215px !important; } 
             
-            /* Toggle bottom two frames for celebrating/talking */
-            .pat.talk-closed { background-position: 0px -215px; } /* Bottom-Left: Gaze Down Side (L) */
-            .pat.talk-open { background-position: -175px -215px; } /* Bottom-Right: Gaze Down Side (R) */
-            
-            .wheel-container { width: 380px; height: 380px; }
+            /* Scaled down to prevent overflow */
+            .wheel-container { width: 340px; height: 340px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
+            
             h1 { 
-                font-size: 5rem; 
+                font-size: 4rem; 
                 letter-spacing: 3px; 
                 text-shadow: 
                     1px 1px 0px #1a1a1a,
@@ -461,8 +474,25 @@
                     5px 5px 0px #1a1a1a,
                     6px 6px 0px #1a1a1a;
             }
-            .tile-container { width: 32px; height: 42px; }
-            .tile-back { font-size: 22px; }
+            
+            /* Scaled down to prevent board from overflowing off the screen */
+            .result-board { padding: 15px 10px; }
+            .board-row { gap: 4px; }
+            .tile-container { width: 26px; height: 36px; }
+            .tile-back { font-size: 20px; }
+        }
+
+        /* Smaller Phones specifically to prevent horizontal sliding */
+        @media (max-width: 400px) {
+            h1 { font-size: 3.5rem; }
+            .wheel-container { width: 300px; height: 300px; }
+            .center-hub { width: 90px; height: 90px; font-size: 18px; }
+            .board-row { gap: 3px; }
+            .tile-container { width: 22px; height: 32px; }
+            .tile-back { font-size: 16px; }
+            .controls { padding: 16px; margin-top: 40px; }
+            input { padding: 12px 14px; font-size: 16px; }
+            button { padding: 12px 20px; font-size: 16px; }
         }
     </style>
 </head>
