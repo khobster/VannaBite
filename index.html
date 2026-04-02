@@ -68,7 +68,6 @@
             z-index: 5;
         }
         
-        /* Wrapper clips the sprite to hide borders */
         .host-wrapper {
             overflow: hidden;
             position: relative;
@@ -76,7 +75,6 @@
         
         .host {
             background-repeat: no-repeat;
-            /* NO background-color - let it be transparent */
         }
         
         /* === PAT === */
@@ -89,9 +87,7 @@
             width: 230px;
             height: 280px;
             background-image: url('pat_sajack_animation_sheet.png');
-            /* Slightly larger than 2x to zoom in and hide borders */
             background-size: 470px 570px;
-            /* Offset to center within the slightly-cropped wrapper */
             position: relative;
             left: -5px;
             top: -5px;
@@ -279,109 +275,118 @@
                 2px 2px 0 rgba(0,0,0,0.3);
         }
         
-        /* === RETRO CONTROLS === */
+        /* === CLEAN CONTROLS & LIST === */
         .controls { 
-            margin-top: 150px; 
+            margin-top: 80px; 
             margin-bottom: 50px;
             display: flex; 
             flex-direction: column; 
             width: 100%; 
             max-width: 520px;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border: 1px solid #eaeaea;
         }
         
         .input-group { 
             display: flex; 
-            margin-bottom: 10px; 
+            margin-bottom: 8px; 
+            gap: 12px;
         }
         
         input {
             flex-grow: 1; 
-            padding: 16px 20px;
-            border: none;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
             font-size: 20px;
             font-family: 'Staatliches', cursive;
-            background: linear-gradient(180deg, #fff8dc 0%, #f0e68c 100%);
-            color: #222;
+            background: #faf8f0;
+            color: #333;
             letter-spacing: 1px;
-            box-shadow: 
-                inset 0 2px 0 rgba(255,255,255,0.8),
-                inset 0 -3px 0 rgba(0,0,0,0.15),
-                4px 4px 0 #8b6914;
+            transition: border-color 0.2s, background 0.2s;
         }
         
-        input::placeholder { color: #888; }
-        input:focus { outline: none; background: linear-gradient(180deg, #fffacd 0%, #fff8dc 100%); }
+        input::placeholder { color: #a0a0a0; }
+        input:focus { outline: none; border-color: #d4a84b; background: #ffffff; }
         
         button {
-            padding: 16px 32px; 
-            background: linear-gradient(180deg, #ff6b35 0%, #d63000 100%);
+            padding: 14px 28px; 
+            background: #d4a84b;
             color: #fff;
             border: none;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 22px; 
+            font-size: 20px; 
             font-family: 'Staatliches', cursive;
             letter-spacing: 2px;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
-            box-shadow: 
-                inset 0 2px 0 rgba(255,255,255,0.3),
-                inset 0 -3px 0 rgba(0,0,0,0.2),
-                4px 4px 0 #8b2500;
-            transition: transform 0.1s, box-shadow 0.1s;
+            transition: background 0.2s, transform 0.1s;
         }
         
         button:hover { 
-            background: linear-gradient(180deg, #ff7f50 0%, #e63900 100%);
-            transform: translate(-1px, -1px);
-            box-shadow: inset 0 2px 0 rgba(255,255,255,0.3), inset 0 -3px 0 rgba(0,0,0,0.2), 5px 5px 0 #8b2500;
+            background: #b88f3a;
         }
         
         button:active {
-            transform: translate(2px, 2px);
-            box-shadow: inset 0 2px 0 rgba(255,255,255,0.3), inset 0 -3px 0 rgba(0,0,0,0.2), 2px 2px 0 #8b2500;
+            transform: scale(0.98);
         }
         
         .char-limit {
             text-align: right;
-            padding: 6px 4px;
-            color: #8b6914;
-            font-size: 14px;
-            letter-spacing: 2px;
+            padding: 0 4px;
+            color: #999;
+            font-size: 13px;
+            letter-spacing: 1px;
+            font-family: sans-serif;
         }
         
         .option-list {
-            margin-top: 15px; 
-            background: linear-gradient(180deg, #4169e1 0%, #2a4db5 100%);
-            box-shadow: 
-                inset 0 2px 0 rgba(255,255,255,0.2),
-                inset 0 -4px 0 rgba(0,0,0,0.2),
-                6px 6px 0 #1a2d6b;
+            margin-top: 24px; 
+            background: transparent;
         }
         
         .option-list h3 {
-            text-align: center; 
-            padding: 16px; 
+            text-align: left; 
+            padding: 0 0 12px 0; 
             margin: 0;
-            background: linear-gradient(180deg, #ffd700 0%, #daa520 100%);
             font-family: 'Staatliches', cursive;
-            color: #1a1a00; 
+            color: #222; 
             font-size: 1.6rem;
-            letter-spacing: 3px;
-            text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
-            box-shadow: inset 0 2px 0 rgba(255,255,255,0.4), inset 0 -3px 0 rgba(0,0,0,0.15);
+            letter-spacing: 2px;
+            border-bottom: 2px solid #f0f0f0;
         }
         
-        .options-scroll { max-height: 220px; overflow-y: auto; }
+        #option-count {
+            text-align: left;
+            padding: 8px 0;
+            color: #777;
+            font-size: 14px;
+            letter-spacing: 1px;
+            font-family: sans-serif;
+        }
+
+        .options-scroll { 
+            max-height: 240px; 
+            overflow-y: auto; 
+            padding-right: 6px;
+        }
+        
+        /* Custom scrollbar for a neat look */
+        .options-scroll::-webkit-scrollbar { width: 6px; }
+        .options-scroll::-webkit-scrollbar-thumb { background: #dcdcdc; border-radius: 10px; }
         
         .option-item {
             display: flex; 
             justify-content: space-between; 
             align-items: center;
-            padding: 12px 18px; 
-            border-bottom: 3px solid rgba(0,0,0,0.2);
-            background: rgba(255,255,255,0.05);
+            padding: 12px 0; 
+            border-bottom: 1px solid #f0f0f0;
+            background: transparent;
         }
         
-        .option-item:nth-child(even) { background: rgba(0,0,0,0.1); }
+        .option-item:last-child { border-bottom: none; }
         
         .option-item span { 
             display: flex; 
@@ -389,33 +394,28 @@
             gap: 14px;
             font-size: 20px;
             letter-spacing: 1px;
-            text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+            color: #444;
         }
         
         .color-dot { 
-            width: 28px; height: 28px; 
-            border: 3px solid #fff;
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            width: 20px; height: 20px; 
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px #ccc;
+            border-radius: 50%; /* Made circles to look cleaner */
         }
         
         .delete-btn { 
-            background: linear-gradient(180deg, #ff4444 0%, #cc0000 100%);
-            color: white; 
-            padding: 8px 16px;
-            font-size: 16px;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 2px 2px 0 #660000;
-            text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+            background: #f4f4f4;
+            color: #888; 
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s;
         }
         
-        .delete-btn:hover { background: linear-gradient(180deg, #ff5555 0%, #dd1111 100%); }
-        
-        #option-count {
-            text-align: center;
-            padding: 10px;
-            color: rgba(255,255,255,0.9);
-            font-size: 16px;
-            letter-spacing: 3px;
-            text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+        .delete-btn:hover { 
+            background: #ffebee;
+            color: #d32f2f;
         }
         
         @media (max-width: 950px) {
@@ -426,7 +426,9 @@
                 width: 170px; height: 210px; 
                 background-size: 350px 430px; 
             }
-            .pat.watching { background-position: -175px 0px; }
+            /* MOBILE FIX: Keep Pat looking forward (idle) instead of turning head */
+            .pat.watching { background-position: 0px 0px; } 
+            
             .pat.talk-closed { background-position: 0px -215px; }
             .pat.talk-open { background-position: -175px -215px; }
             
@@ -482,7 +484,7 @@
             </div>
             <div class="char-limit">MAX 8 LETTERS</div>
             <div class="option-list">
-                <h3>★ TONIGHT'S OPTIONS ★</h3>
+                <h3>TONIGHT'S OPTIONS</h3>
                 <div id="option-count"></div>
                 <div class="options-scroll">
                     <div id="options-list"></div>
@@ -550,8 +552,6 @@
             if (state === 'watching') {
                 pat.className = 'host pat watching';
             } else if (state === 'celebrating') {
-                // Toggle between bottom-left (talk-closed) and bottom-right (talk-open)
-                // Both frames have arms up, only head/mouth changes
                 let toggle = true;
                 talkingInterval = setInterval(() => {
                     pat.className = 'host pat ' + (toggle ? 'talk-open' : 'talk-closed');
@@ -595,7 +595,7 @@
         function createWheel() {
             const n = dinnerOptions.length;
             if (n === 0) { 
-                wheel.innerHTML = '<div style="width:100%;height:100%;background:#333;border-radius:50%;"></div>';
+                wheel.innerHTML = '<div style="width:100%;height:100%;background:#e0e0e0;border-radius:50%;"></div>';
                 wheelColors = [];
                 return; 
             }
@@ -658,7 +658,7 @@
         function updateList() {
             const list = document.getElementById('options-list');
             list.innerHTML = '';
-            document.getElementById('option-count').innerText = `${dinnerOptions.length} DELICIOUS CHOICES`;
+            document.getElementById('option-count').innerText = `${dinnerOptions.length} OPTIONS`;
             dinnerOptions.forEach((opt, i) => {
                 const div = document.createElement('div');
                 div.className = 'option-item';
