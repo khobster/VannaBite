@@ -446,32 +446,18 @@
             .hosts-container { order: -1; margin-right: 0; margin-bottom: 0; }
             .pat-wrapper { width: 160px; height: 200px; }
             
+            /* FORCE THE MOBILE SPRITE SHEET FOR ALL MOBILE STATES */
             .pat { 
                 width: 170px; height: 210px; 
-                background-size: 350px 430px; 
+                background-image: url('pat_sajack_animation_sheet_mobile.png') !important; 
+                background-size: 350px 430px !important; 
             }
             
-            /* IDLE: Use Desktop sheet so he looks forward at the user */
-            .pat.idle { 
-                background-image: url('pat_sajack_animation_sheet.png') !important; 
-                background-position: 0px 0px !important; 
-            } 
-            
-            /* WATCHING (Spinning): Swap to Mobile sheet so he looks DOWN at the wheel */
-            .pat.watching { 
-                background-image: url('pat_sajack_animation_sheet_mobile.png') !important; 
-                background-position: 0px 0px !important; 
-            } 
-            
-            /* TALKING (Celebrating): Swap to Mobile sheet so he talks while looking down */
-            .pat.talk-closed { 
-                background-image: url('pat_sajack_animation_sheet_mobile.png') !important; 
-                background-position: 0px -215px !important; 
-            } 
-            .pat.talk-open { 
-                background-image: url('pat_sajack_animation_sheet_mobile.png') !important; 
-                background-position: -175px -215px !important; 
-            } 
+            /* All states now pull directly from the mobile sheet */
+            .pat.idle { background-position: 0px 0px !important; } 
+            .pat.watching { background-position: 0px 0px !important; } 
+            .pat.talk-closed { background-position: 0px -215px !important; } 
+            .pat.talk-open { background-position: -175px -215px !important; } 
             
             /* Scaled down to prevent overflow */
             .wheel-container { width: 340px; height: 340px; }
