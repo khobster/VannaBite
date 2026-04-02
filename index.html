@@ -373,7 +373,6 @@
             padding-right: 6px;
         }
         
-        /* Custom scrollbar for a neat look */
         .options-scroll::-webkit-scrollbar { width: 6px; }
         .options-scroll::-webkit-scrollbar-thumb { background: #dcdcdc; border-radius: 10px; }
         
@@ -401,7 +400,7 @@
             width: 20px; height: 20px; 
             border: 2px solid #fff;
             box-shadow: 0 0 0 1px #ccc;
-            border-radius: 50%; /* Made circles to look cleaner */
+            border-radius: 50%;
         }
         
         .delete-btn { 
@@ -422,15 +421,21 @@
             .game-area { flex-direction: column; align-items: center; gap: 20px; }
             .hosts-container { order: -1; margin-right: 0; margin-bottom: 0; }
             .pat-wrapper { width: 160px; height: 200px; }
+            
+            /* SWAP TO MOBILE SPRITE SHEET */
             .pat { 
                 width: 170px; height: 210px; 
+                background-image: url('pat_sajack_animation_sheet_mobile.png'); 
                 background-size: 350px 430px; 
             }
-            /* MOBILE FIX: Keep Pat looking forward (idle) instead of turning head */
-            .pat.watching { background-position: 0px 0px; } 
             
-            .pat.talk-closed { background-position: 0px -215px; }
-            .pat.talk-open { background-position: -175px -215px; }
+            /* Map to the new mobile sprite sheet coordinates */
+            .pat.idle { background-position: 0px 0px; } /* Top-Left: Gaze Down Idle */
+            .pat.watching { background-position: 0px 0px; } /* Top-Left: Gaze Down Idle */
+            
+            /* Toggle bottom two frames for celebrating/talking */
+            .pat.talk-closed { background-position: 0px -215px; } /* Bottom-Left: Gaze Down Side (L) */
+            .pat.talk-open { background-position: -175px -215px; } /* Bottom-Right: Gaze Down Side (R) */
             
             .wheel-container { width: 380px; height: 380px; }
             .center-hub { width: 110px; height: 110px; font-size: 20px; }
